@@ -3,12 +3,25 @@ import json
 
 # uses the angle between the two vectors of ideal frequencies and actual frequencies (the bigger the less similar)
 # also this seems to be pretty useful as it's very expensive to calculate and not very effective
-idealLetterFrequencies = fromfile("Text analysis/letterFrequencies.bin",dtype=uintc)
-def evaluateLetterFrequencies(plainText):
+with open("Text analysis/letterFrequenciesSorted.json","r") as file:
+    idealLetterFrequenciesSorted = array(json.load(file),dtype=uintc)
+def evaluateLetterFrequenciesSubstituted(plainText):
     letterFrequencies = zeros(26,dtype=uintc)
     for letter in plainText:
         letterFrequencies[ord(letter)-97]+=1
-    return dot(letterFrequencies,idealLetterFrequencies)/(linalg.norm(letterFrequencies)*linalg.norm(idealLetterFrequencies))
+    letterFrequencies = sorted(letterFrequencies)
+    return dot(letterFrequencies,idealLetterFrequenciesSorted)/(linalg.norm(letterFrequencies)*linalg.norm(idealLetterFrequenciesSorted))
+
+with open("Text analysis/letterFrequenciesUnsorted.json","r") as file:
+    idealLetterFrequenciesUnsorted = array(json.load(file),dtype=uintc)
+def evaluateLetterFrequenciesUnsubstituted(plainText):
+    letterFrequencies = zeros(26, dtype=uintc)
+    for letter in plainText:
+        letterFrequencies[ord(letter) - 97] += 1
+    return dot(letterFrequencies, idealLetterFrequenciesUnsorted) / (
+                linalg.norm(letterFrequencies) * linalg.norm(idealLetterFrequenciesUnsorted))
+
+# print(evaluateLetterFrequenciesSorted())
 
 # a much better, and computationally cheaper, approach. Logged quadgram frequencies (the more negative, the less similar)
 with open("Text analysis/quadgram proportions.json","r") as file:
@@ -21,6 +34,19 @@ def evaluateQuadgramFrequencies(plainText):
     for letter in plainText[4:]:
         try:
             fitness += idealQuadgramFrequencies[window]
+        except:
+            fitness += floor
+        window = window[1:] + letter
+    return fitness
+
+with open("Text analysis/bigram proportions.json","r") as file:
+    idealBigramFrequencies = json.load(file)
+def evaluateBigramFrequencies(plainText):
+    window = plainText[:2]
+    fitness = 0
+    for letter in plainText[2:]:
+        try:
+            fitness += idealBigramFrequencies[window]
         except:
             fitness += floor
         window = window[1:] + letter
