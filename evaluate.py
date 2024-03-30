@@ -3,7 +3,7 @@ import json
 
 # uses the angle between the two vectors of ideal frequencies and actual frequencies (the bigger the less similar)
 # also this seems to be pretty useful as it's very expensive to calculate and not very effective
-with open("Text analysis/letterFrequenciesSorted.json","r") as file:
+with open("letterFrequenciesSorted.json","r") as file:
     idealLetterFrequenciesSorted = array(json.load(file),dtype=uintc)
 def evaluateLetterFrequenciesSubstituted(plainText):
     letterFrequencies = zeros(26,dtype=uintc)
@@ -12,7 +12,7 @@ def evaluateLetterFrequenciesSubstituted(plainText):
     letterFrequencies = sorted(letterFrequencies)
     return dot(letterFrequencies,idealLetterFrequenciesSorted)/(linalg.norm(letterFrequencies)*linalg.norm(idealLetterFrequenciesSorted))
 
-with open("Text analysis/letterFrequenciesUnsorted.json","r") as file:
+with open("letterFrequenciesUnsorted.json","r") as file:
     idealLetterFrequenciesUnsorted = array(json.load(file),dtype=uintc)
 def evaluateLetterFrequenciesUnsubstituted(plainText):
     letterFrequencies = zeros(26, dtype=uintc)
@@ -24,7 +24,7 @@ def evaluateLetterFrequenciesUnsubstituted(plainText):
 # print(evaluateLetterFrequenciesSorted())
 
 # a much better, and computationally cheaper, approach. Logged quadgram frequencies (the more negative, the less similar)
-with open("Text analysis/quadgram proportions.json","r") as file:
+with open("quadgram proportions.json","r") as file:
     idealQuadgramFrequencies = json.load(file)
 floor = -25 # this is the value when something appears 0 times in our ideal text (very negative because not very similar)
 # if something appears once it's about -21
@@ -39,7 +39,7 @@ def evaluateQuadgramFrequencies(plainText):
         window = window[1:] + letter
     return fitness
 
-with open("Text analysis/bigram proportions.json","r") as file:
+with open("bigram proportions.json","r") as file:
     idealBigramFrequencies = json.load(file)
 def evaluateBigramFrequencies(plainText):
     window = plainText[:2]
