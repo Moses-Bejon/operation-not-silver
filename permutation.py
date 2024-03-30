@@ -1,6 +1,6 @@
 import random
 
-class permutation():
+class permutation(): # also name the file the same way please
 
     def __init__(self,cipher):
         self.__cipher = cipher # the cipherText
@@ -10,7 +10,7 @@ class permutation():
         # length of key is a factor of the length of the cipher text
         self.__keyLengths = []
 
-        for possibleFactor in range(2, int(length**0.5)):
+        for possibleFactor in range(2, int(length**0.5)):  # at a key length of 10 there are already too many permutations
             if length % possibleFactor == 0:
                 self.__keyLengths.append(possibleFactor)
 
@@ -26,12 +26,13 @@ class permutation():
         else:
             self.__keySwitch = True
             self.__previousKey = self.__key[::]
-            self.__key = random.choice(self.__keyLengths)
+            self.__keyLength = random.choice(self.__keyLengths)
             self.__key = list(range(self.__keyLength))
 
     def undoShuffle(self):
         if self.__keySwitch:
             self.__key = self.__previousKey
+            self.__keyLength = len(self.__key)
         else:
             self.__key[self.__choices[0]], self.__key[self.__choices[1]] = self.__key[self.__choices[1]], self.__key[self.__choices[0]]
 
