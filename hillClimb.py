@@ -41,8 +41,11 @@ def hillClimb(cipher,evaluate):
             # call cipher.getOptimalShuffleAmount() in these places and finely tune each cipher but these seem like good
             # general values)
             if withoutClimbing > 5000:
-                for _ in range(10):
-                    cipher.shuffle()
+                try:
+                    cipher.shake()
+                except AttributeError:
+                    for _ in range(10):
+                        cipher.shuffle()
                 withoutClimbing = 0
                 plainText = cipher.decipher()
                 maxScore = evaluate(plainText)
