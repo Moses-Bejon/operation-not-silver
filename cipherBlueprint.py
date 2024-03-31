@@ -11,6 +11,12 @@ class nameOfCipherInCamelCase(): # also name the file the same way please
         # deciphered is as similar to the previous as possible)
         pass
 
+    # this is an optional function feel free to remove it
+    # if the hill climb thinks it's reached a local maximum, it will call this function, to attempt to break out
+    # if you have removed it the cipher will simply be shuffled ten times instead
+    def shake(self):
+        pass
+
     def undoShuffle(self):
         # only needs to undo one previous shuffle. This function will not be called twice in a row, only ever with a
         # shuffle() in between
