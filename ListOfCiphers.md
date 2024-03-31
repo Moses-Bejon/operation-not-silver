@@ -18,9 +18,9 @@ _Under polyalhabeticSubstutitionCiphers folder_
 - Unit 29: Periodic polyalphabetic substitution cipher
 - **Unit 33: Vigenère cipher**
 - Unit 39: Gronsfeld cipher (optional)
-**- Unit 40: Beaufort cipher**
+- **Unit 40: Beaufort cipher**
 - Unit 41: Variant Beaufort cipher
-**- Unit 42: Porta cipher**
+- **Unit 42: Porta cipher**
 - Unit 43: Periodic affine cipher
 - Unit 45: Quagmire 1 cipher
 - Unit 47: Quagmire 2 cipher
@@ -40,14 +40,14 @@ _Under transpositionCiphers folder_
 - Unit 64: Redefence cipher (optional)
 - Unit 65: AMSCO cipher
 - Unit 66: Myszkowsky cipher (optional)
-**- Unit 67: Cadenus cipher**
+- **Unit 67: Cadenus cipher**
 
 _Under gridCiphers folder_
 - **Unit 69: Polybius cipher**
 - **Unit 70: Playfair cipher**
 - Unit 72: Vertical two-square cipher
 - Unit 73: Horizontal two-square cipher
-**- Unit 75: Four-square cipher**
+- **Unit 75: Four-square cipher**
 - **Unit 76: Phillips cipher**
 - Unit 78: Phillips-RC cipher (optional)
 - Unit 79: Double Playfair cipher
@@ -55,7 +55,7 @@ _Under gridCiphers folder_
 - Unit 81: Bifid cipher
 - Unit 82: Trifid cipher
 - **Unit 83: ADFGX cipher**
-**Unit 84: ADFGVX cipher**
+- **Unit 84: ADFGVX cipher**
 
 _Under matricesCiphers_
 - **Unit 87: Hill cipher**
