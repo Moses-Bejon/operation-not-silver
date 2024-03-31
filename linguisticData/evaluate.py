@@ -21,8 +21,6 @@ def evaluateLetterFrequenciesUnsubstituted(plainText):
     return dot(letterFrequencies, idealLetterFrequenciesUnsorted) / (
                 linalg.norm(letterFrequencies) * linalg.norm(idealLetterFrequenciesUnsorted))
 
-# print(evaluateLetterFrequenciesSorted())
-
 # a much better, and computationally cheaper, approach. Logged quadgram frequencies (the more negative, the less similar)
 with open("quadgram proportions.json","r") as file:
     idealQuadgramFrequencies = json.load(file)
