@@ -8,11 +8,11 @@
 **List of ciphers: high priority are in bold**
 
 _Under monoalphabeticSubstutitionCiphers folder_
-**Unit 12: Monoalphabetic substitution cipher
-Unit 13: Atbash cipher
-Unit 15: Caesar shift cipher
-Unit 22: Affine cipher
-Unit 26: Keyword substitution cipher**
+- **Unit 12: Monoalphabetic substitution cipher
+- Unit 13: Atbash cipher
+- Unit 15: Caesar shift cipher
+- Unit 22: Affine cipher
+- Unit 26: Keyword substitution cipher**
 
 _Under polyalhabeticSubstutitionCiphers folder_
 Unit 29: Periodic polyalphabetic substitution cipher
