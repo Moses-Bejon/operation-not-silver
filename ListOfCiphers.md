@@ -1,4 +1,4 @@
-**Methods**
+**Methods (under linguisticData)**
 - Hill-clib attack
 - Index of Coincidence analysis
 - Brute Force
