@@ -8,28 +8,28 @@
 **List of ciphers: high priority are in bold**
 
 _Under monoalphabeticSubstutitionCiphers folder_
-- **Unit 12: Monoalphabetic substitution cipher**
-- **Unit 13: Atbash cipher**
-- **Unit 15: Caesar shift cipher**
-- **Unit 22: Affine cipher**
-- **Unit 26: Keyword substitution cipher**
+- **Unit 12: Monoalphabetic substitution cipher**✅
+- **Unit 13: Atbash cipher**✅
+- **Unit 15: Caesar shift cipher**✅
+- **Unit 22: Affine cipher**✅
+- **Unit 26: Keyword substitution cipher**✅
 
 _Under polyalhabeticSubstutitionCiphers folder_ 
-- Unit 29: Periodic polyalphabetic substitution cipher
-- **Unit 33: Vigenère cipher**
-- Unit 39: Gronsfeld cipher (optional)
-- **Unit 40: Beaufort cipher**
-- Unit 41: Variant Beaufort cipher
-- **Unit 42: Porta cipher**
-- Unit 43: Periodic affine cipher
-- Unit 45: Quagmire 1 cipher
-- Unit 47: Quagmire 2 cipher
-- Unit 48: Quagmire 3 cipher
-- Unit 49: Quagmire 4 cipher
+- Unit 29: Periodic polyalphabetic substitution cipher✅
+- **Unit 33: Vigenère cipher**✅
+- Unit 39: Gronsfeld cipher (optional)✅
+- **Unit 40: Beaufort cipher**✅
+- Unit 41: Variant Beaufort cipher✅
+- **Unit 42: Porta cipher**✅
+- Unit 43: Periodic affine cipher✅
+- Unit 45: Quagmire 1 cipher✅
+- Unit 47: Quagmire 2 cipher✅
+- Unit 48: Quagmire 3 cipher✅
+- Unit 49: Quagmire 4 cipher✅
 
 _Under transpositionCiphers folder_
 - **Unit 51: Transposition ciphers**
-- Unit 53: Permutation cipher
+- Unit 53: Permutation cipher✅
 - Unit 54: Heap’s algorithm
 - Unit 58: Matrix transposition
 - Unit 59: Twisted scytale
@@ -47,7 +47,7 @@ _Under gridCiphers folder_
 - **Unit 70: Playfair cipher**
 - Unit 72: Vertical two-square cipher
 - Unit 73: Horizontal two-square cipher
-- **Unit 75: Four-square cipher**
+- **Unit 75: Four-square cipher**✅ - some variants not covered
 - **Unit 76: Phillips cipher**
 - Unit 78: Phillips-RC cipher (optional)
 - Unit 79: Double Playfair cipher
