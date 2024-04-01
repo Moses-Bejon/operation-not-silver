@@ -29,7 +29,7 @@ _Under polyalhabeticSubstutitionCiphers folder_
 
 _Under transpositionCiphers folder_
 - **Unit 51: Transposition ciphers**
-- Unit 53: Permutation cipher✅-can be optimised
+- Unit 53: Permutation cipher✅
 - Unit 54: Heap’s algorithm
 - Unit 58: Matrix transposition
 - Unit 59: Twisted scytale
