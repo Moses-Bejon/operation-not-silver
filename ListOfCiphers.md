@@ -31,9 +31,9 @@ _Under transpositionCiphers folder_
 - **Unit 51: Transposition ciphers**
 - Unit 53: Permutation cipher✅
 - Unit 54: Heap’s algorithm
-- Unit 58: Matrix transposition
+- Unit 58: Matrix transposition✅
 - Unit 59: Twisted scytale
-- **Unit 60: Columnar transposition cipher**
+- **Unit 60: Columnar transposition cipher**✅
 - Unit 61: Double columnar transposition cipher
 - **Unit 62: Nihilist transposition cipher**
 - **Unit 63: Railfence cipher**
