@@ -29,7 +29,7 @@ _Under polyalhabeticSubstutitionCiphers folder_
 
 _Under transpositionCiphers folder_
 - **Unit 51: Transposition ciphers**
-- Unit 53: Permutation cipher✅
+- Unit 53: Permutation cipher✅-can be optimised
 - Unit 54: Heap’s algorithm
 - Unit 58: Matrix transposition
 - Unit 59: Twisted scytale
@@ -58,7 +58,7 @@ _Under gridCiphers folder_
 - **Unit 84: ADFGVX cipher**
 
 _Under matricesCiphers_
-- **Unit 87: Hill cipher**
+- **Unit 87: Hill cipher**✅-can be optimised
 - **Unit 89: Affine Hill cipher**
 
 _Under streamCiphers_
