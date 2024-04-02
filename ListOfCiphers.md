@@ -34,7 +34,7 @@ _Under transpositionCiphers folder_
 - Unit 58: Matrix transposition✅
 - Unit 59: Twisted scytale
 - **Unit 60: Columnar transposition cipher**✅
-- Unit 61: Double columnar transposition cipher
+- Unit 61: Double columnar transposition cipher✅
 - **Unit 62: Nihilist transposition cipher**
 - **Unit 63: Railfence cipher**
 - Unit 64: Redefence cipher (optional)
