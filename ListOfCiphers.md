@@ -57,9 +57,9 @@ _Under gridCiphers folder_
 - **Unit 83: ADFGX cipher**
 - **Unit 84: ADFGVX cipher**
 
-_Under matricesCiphers_
-- **Unit 87: Hill cipher**✅-can be optimised
-- **Unit 89: Affine Hill cipher**
+_Under matricesCiphers_✅ (2x2)
+- **Unit 87: Hill cipher**✅
+- **Unit 89: Affine Hill cipher**✅
 
 _Under streamCiphers_
 - Unit 90: Stream ciphers
