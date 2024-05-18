@@ -38,7 +38,7 @@ class columnarSubstitution():
     
     def decipher(self):
         # this decipher function is really efficient, at the cost of being really unreadable
-        plainText = ""
+        plainText = []
 
         orderedLongs = self.__key[:self.__leftOver]
 
@@ -54,9 +54,9 @@ class columnarSubstitution():
 
         for row in range(self.__numberOfFilledRows):
             for column in self.__key:
-                plainText += self.__cipher[lengthLeadingUpTo[column]+row]
+                plainText.append(self.__cipher[lengthLeadingUpTo[column]+row])
 
         for column in orderedLongs:
-            plainText += self.__cipher[lengthLeadingUpTo[column]+self.__numberOfFilledRows]
+            plainText.append(self.__cipher[lengthLeadingUpTo[column]+self.__numberOfFilledRows])
 
         return plainText
