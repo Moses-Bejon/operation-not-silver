@@ -66,7 +66,7 @@ class doubleColumnarSubstitution():
 
     def decipher(self):
         # this decipher function is really efficient, at the cost of being really unreadable
-        plainText1 = ""
+        plainText1 = []
 
         # key 1 decipher
         orderedLongs = self.__key1[:self.__leftOver1]
@@ -83,14 +83,14 @@ class doubleColumnarSubstitution():
 
         for row in range(self.__numberOfFilledRows1):
             for column in self.__key1:
-                plainText1 += self.__cipher[lengthLeadingUpTo[column] + row]
+                plainText1.append(self.__cipher[lengthLeadingUpTo[column] + row])
 
         for column in orderedLongs:
-            plainText1 += self.__cipher[lengthLeadingUpTo[column] + self.__numberOfFilledRows1]
+            plainText1.append(self.__cipher[lengthLeadingUpTo[column] + self.__numberOfFilledRows1])
 
         # key 2 decipher
 
-        plainText2 = ""
+        plainText2 = []
 
         orderedLongs = self.__key2[:self.__leftOver2]
 
@@ -106,9 +106,9 @@ class doubleColumnarSubstitution():
 
         for row in range(self.__numberOfFilledRows2):
             for column in self.__key2:
-                plainText2 += plainText1[lengthLeadingUpTo[column] + row]
+                plainText2.append(plainText1[lengthLeadingUpTo[column] + row])
 
         for column in orderedLongs:
-            plainText2 += plainText1[lengthLeadingUpTo[column] + self.__numberOfFilledRows2]
+            plainText2.append(plainText1[lengthLeadingUpTo[column] + self.__numberOfFilledRows2])
 
         return plainText2
