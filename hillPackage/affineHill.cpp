@@ -1,12 +1,8 @@
-//NOTE: I yoinked a lot of the code from existing soultions since I'm too dumb to code modulo stuff myself
-
 //standard modules:
 #include <iostream>
 #include <string>
-#include <cmath>
 #include <limits>
 #include <fstream>
-#include <algorithm>
 #include <chrono>
 
 //bespoke modules:
@@ -24,12 +20,15 @@ void deepCopy2dArray(int source[][2], int destination[][2]) {
     }
 }
 
-static int char_to_int(char character) {
-    return int(tolower(character)) - 97;
-}
-
 static char int_to_char(int charCode) {
     return char(charCode + 97);
+}
+
+void printIntStr(int* intStr, int len) {
+    for (int i = 0; i < len; i++) {
+        cout << int_to_char(intStr[i]); 
+    }
+    cout << "\n";
 }
 
 //algorithm to calculate determinant of 2x2
@@ -64,16 +63,11 @@ int** mod_matrix_inv(int matrix[2][2]) {
 
     //invert each member of the matrix individually using inverse determinant
     int** moduloMatrixInv = new int*[2];
+    //int invMember;
     for (int i = 0; i < 2; i++) {
         moduloMatrixInv[i] = new int[2];
         for (int j = 0; j < 2; j++) {
-            int invMember = (adjugate[i][j] * det_inv) % 26;
-
-            // Ensure result is positive or zero
-            if (invMember < 0) {
-                invMember += 26;  
-            }
-            moduloMatrixInv[i][j] = invMember;
+            moduloMatrixInv[i][j] = ((adjugate[i][j] * det_inv) % 26 + 26) % 26;
         }
     }
 
@@ -81,41 +75,34 @@ int** mod_matrix_inv(int matrix[2][2]) {
 }
 
 //decrypt ciphertext using 2x2 int array key
-string decipher(string ciphertext, int inv_key[2][2], int a, int b) {
-    string plaintext = "";
+int* decipher(int* ciphertext, int len, int inv_key[2][2], int a, int b) {
+    int left_val;
+    int right_val;
 
-    int length = ciphertext.length();
-    //apply inverse key to every 2 chunks of the ciphertext
-    for (int i = 0; i < length; i += 2) {
-        int word[2] = {char_to_int(ciphertext[i]) - a, char_to_int(ciphertext[i + 1]) - b};
-        if (word[0] < 0) {
-            word[0] += 26;
-        }
-        if (word[1] < 0) {
-            word[1] += 26;
-        }
+    int* plaintext = new int[len];
 
-        int result[2] = {
-            inv_key[0][0] * word[0] + inv_key[0][1] * word[1], 
-            inv_key[1][0] * word[0] + inv_key[1][1] * word[1]
-        };
-        
-        //concatenate the result to the end of plaintext
-        plaintext += int_to_char(result[0] % 26);
-        plaintext += int_to_char(result[1] % 26);
+    //apply decryption to every 2 chunks of the ciphertext
+    for (int i = 0; i < len; i += 2) {
+        //undo a,b vector offset
+        left_val = (ciphertext[i] - a + 26) % 26;
+        right_val = (ciphertext[i + 1] - b + 26) % 26;
+
+        //apply inverse key matrix and add to plaintext
+        plaintext[i] = (inv_key[0][0] * left_val + inv_key[0][1] * right_val) % 26;
+        plaintext[i + 1] = (inv_key[1][0] * left_val + inv_key[1][1] * right_val) % 26;
     }
 
     return plaintext;
 }
 
 //special print procedure to produce a status update
-void printEncryptionSet(string ciphertext, int inv_key[2][2], int a, int b, double score) {
-    string full_plaintext = decipher(ciphertext, inv_key, a, b);
+void printEncryptionSet(int* ciphertext, int len, int inv_key[2][2], int a, int b, double score) {
+    int* full_plaintext = decipher(ciphertext, len, inv_key, a, b);
 
     int** key = mod_matrix_inv(inv_key);
 
     cout << "\n";
-    cout << full_plaintext << "\n";
+    printIntStr(full_plaintext, len);
     cout << "Score:" << score << "\n";
     cout << "key:\n";
     cout << key[0][0] << " " << key[0][1] << "\n";
@@ -124,37 +111,24 @@ void printEncryptionSet(string ciphertext, int inv_key[2][2], int a, int b, doub
     cout << a << " " << b << "\n";
 
     //free up memory to prevent memory leak
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 2; i++) {
         delete[] key[i];
     }
     delete[] key;
+
+    delete[] full_plaintext;
 }
 
 //main brute force procedure
-void keyDictAttack(string ciphertext, int testChunk = -1, int notiPer = 500000) {
+void keyDictAttack(int* ciphertext, int subLen, int len, int notiPer = 1000000) {
     int key[2][2];
-    int offset;
     int bestKey[2][2];
     double maxScore = - numeric_limits<double>::infinity(); //double negative infinity
     int trials = 0;
 
-    //take a segment of the cyphertext rather than the whole thing 
-    string ciphertext_seg; 
-    if (testChunk == -1) {
-        ciphertext_seg = ciphertext;
-    }
-    else {
-        ciphertext_seg = ciphertext.substr(0, testChunk);
-    }
-
-    //remove spaces from ciphertext string
-    ciphertext_seg.erase(remove_if(ciphertext_seg.begin(), ciphertext_seg.end(), ::isspace), ciphertext_seg.end());
-    ciphertext.erase(remove_if(ciphertext.begin(), ciphertext.end(), ::isspace), ciphertext.end()); 
-
     //filestream for key dict
     ifstream hillKeyFile("hill_2x2_inv_keys.txt");
 
-    string plaintext;
     Evaluate evaluater;
     double score = 0;
 
@@ -170,13 +144,13 @@ void keyDictAttack(string ciphertext, int testChunk = -1, int notiPer = 500000) 
     while (hillKeyFile >> key[0][0] >> key[0][1] >> key[1][0] >> key[1][1]) {
         for (int a = 0; a < 26; a++) {
             for (int b = 0; b < 26; b++) {
-                plaintext = decipher(ciphertext_seg, key, a, b);
+                int* plaintext = decipher(ciphertext, subLen, key, a, b);
 
-                score = evaluater.evaluateQuadgramFrequencies(plaintext);
+                score = evaluater.evaluateQuadgramFrequencies(plaintext, subLen);
 
                 //save and display new best result
                 if (score > maxScore) {
-                    printEncryptionSet(ciphertext, key, a, b, score);
+                    printEncryptionSet(ciphertext, len, key, a, b, score);
                     maxScore = score;
                     deepCopy2dArray(key, bestKey);
                     best_a = a;
@@ -184,9 +158,13 @@ void keyDictAttack(string ciphertext, int testChunk = -1, int notiPer = 500000) 
                 }
 
                 trials++;
+                
                 if (trials % notiPer == 0) {
                     cout << ">>> Number of trials ran: " << trials << "\n";
                 }
+
+                //to prevent memory leak
+                delete[] plaintext;
             }
         }
     }
@@ -203,7 +181,7 @@ void keyDictAttack(string ciphertext, int testChunk = -1, int notiPer = 500000) 
     cout << "\n---------------------------------------------------------------------------------------------------------------------------------------\n";
     cout << "[ STATUS ] \n";
     cout << ">>> Best result:";
-    printEncryptionSet(ciphertext, bestKey, best_a, best_b, maxScore);
+    printEncryptionSet(ciphertext, len, bestKey, best_a, best_b, maxScore);
 
     cout << "Total number of trials:" << trials << "\n";
 
@@ -214,11 +192,20 @@ void keyDictAttack(string ciphertext, int testChunk = -1, int notiPer = 500000) 
 
 int main() {
     //chapter 10A (2023)
-    string ciphertext = "HHIZR KHHXH XCFWL WJHIC YFPAX FHHZD VZLWJ HREXL CGWPP XUWSK EEQTP WDSCA ICHHZ DHVPQ NGAEU CNUAH VQJOV ILWJH VZCEL PLTLD NNNHR RPTQT AHXQE EUCGZ LPRFW QQUGZ WAVOW KGZCQ KKZNY ITMMM ASMQW APRPN IBHKL TRIYY QTTHH UWPLP THWHK GVITG HAWOA WVDGZ HALPJ RQTVI OWZGI CORHH ZDBPB JGKEF JOFWX QLPLT RIFMS KAHWO MYWOB JVXPX TZLEJ UEELE LPHKB UWKBP YRLPU IORVP LQICQ TRVQJ HVLEN APTQI PDBZD KKMZR IMEWA OVZAH NACEW EPRLO REGKA HXQBY BJWAP RPNIB HKVPG THAVI NAUQY WAEHH ZDWAR EFJTH VZVIA HASCC WABUZ GICOR FJAHT IVMJN VOXBL ETHFT LCKBI QRVWO EABOL DYWNA KWFWV MOUAT BPXYN GAERR FXAMX QWOLD BOAHG IXMLP KDBYT TQTSK AELTU WMEWA LTEMW HVZPT SKEEJ NLAFT BQLDH VLPAP AHQCB OAHFG GYXCF WGSBU PXXHM ABIVQ EECTE EBZMG MSWOX BDDUW LPXRP TGUEA TEEXP NHVLE KMDWH AHHUV NGNSA EKOTT LJMGB UBCJH TKNCB JJQVI LDWNA MAHJO SKXBK DRRVI IMSSL ELPAC RRMWB UUGOU ATJDM XASZR AMSGY RVJWA HVVCV QCAIC UITTA HSGPN BCICP LHHPL SKUIV IUIVD HHDDM GHWKM WKYJS KPLIM LMNGP WDGGZ NNTEH KLWEX LPHLT TTESS QTAHV MAWVM WOBJW HFKAW MGGVZ HWAAI GZLPA LIQGZ BYBJK YQTVM VJIUN AMAYR LPVZT KCKLD HHDDC TEEBZ KYBLH KBUIC FRYWF JAHCA EMWHK OBJGZ ICJQH VXBWH MEEAT EAPVW TBZGA HGIXM LPRRQ TOSZA JOFWA WAWRR JDHZS WZDPN BOWOV JFQEF EEMXX QGYIM VJEMP LFWCU ZUREN SAHCA CCGZS JEESA HVGZL PZQKG GZLPQ IVJFQ KRVQI MBPAG ATUAC QOPRK LPRER FYRLP BYVMK SWANA RFHJI CJBMU EMWHJ DMXAS ATLPH LTKNC TTMGM GLWVI AHQCE EGZUG LSVQE EXOEE AHZKL OYWAH CAXKK GVJPI RUWEI XFTTX CNGOG ZLPME AHICN UPWDS CAICT BOSKS ANMYB OYFRU MUDON AJPXQ SSZNH VXPBP OGVCV MWOVJ XFTZT HRRDK BUGIY PASFR SKZNY IVILQ FWWWU XHVWA MUTZM AUUUV PTVXS DCAVI AHWOG XVIPY RUMQ";
-    keyDictAttack(ciphertext, 19); //feeding only part of the chyphertext
+    string ciphertext_str = "HHIZR KHHXH XCFWL WJHIC YFPAX FHHZD VZLWJ HREXL CGWPP XUWSK EEQTP WDSCA ICHHZ DHVPQ NGAEU CNUAH VQJOV ILWJH VZCEL PLTLD NNNHR RPTQT AHXQE EUCGZ LPRFW QQUGZ WAVOW KGZCQ KKZNY ITMMM ASMQW APRPN IBHKL TRIYY QTTHH UWPLP THWHK GVITG HAWOA WVDGZ HALPJ RQTVI OWZGI CORHH ZDBPB JGKEF JOFWX QLPLT RIFMS KAHWO MYWOB JVXPX TZLEJ UEELE LPHKB UWKBP YRLPU IORVP LQICQ TRVQJ HVLEN APTQI PDBZD KKMZR IMEWA OVZAH NACEW EPRLO REGKA HXQBY BJWAP RPNIB HKVPG THAVI NAUQY WAEHH ZDWAR EFJTH VZVIA HASCC WABUZ GICOR FJAHT IVMJN VOXBL ETHFT LCKBI QRVWO EABOL DYWNA KWFWV MOUAT BPXYN GAERR FXAMX QWOLD BOAHG IXMLP KDBYT TQTSK AELTU WMEWA LTEMW HVZPT SKEEJ NLAFT BQLDH VLPAP AHQCB OAHFG GYXCF WGSBU PXXHM ABIVQ EECTE EBZMG MSWOX BDDUW LPXRP TGUEA TEEXP NHVLE KMDWH AHHUV NGNSA EKOTT LJMGB UBCJH TKNCB JJQVI LDWNA MAHJO SKXBK DRRVI IMSSL ELPAC RRMWB UUGOU ATJDM XASZR AMSGY RVJWA HVVCV QCAIC UITTA HSGPN BCICP LHHPL SKUIV IUIVD HHDDM GHWKM WKYJS KPLIM LMNGP WDGGZ NNTEH KLWEX LPHLT TTESS QTAHV MAWVM WOBJW HFKAW MGGVZ HWAAI GZLPA LIQGZ BYBJK YQTVM VJIUN AMAYR LPVZT KCKLD HHDDC TEEBZ KYBLH KBUIC FRYWF JAHCA EMWHK OBJGZ ICJQH VXBWH MEEAT EAPVW TBZGA HGIXM LPRRQ TOSZA JOFWA WAWRR JDHZS WZDPN BOWOV JFQEF EEMXX QGYIM VJEMP LFWCU ZUREN SAHCA CCGZS JEESA HVGZL PZQKG GZLPQ IVJFQ KRVQI MBPAG ATUAC QOPRK LPRER FYRLP BYVMK SWANA RFHJI CJBMU EMWHJ DMXAS ATLPH LTKNC TTMGM GLWVI AHQCE EGZUG LSVQE EXOEE AHZKL OYWAH CAXKK GVJPI RUWEI XFTTX CNGOG ZLPME AHICN UPWDS CAICT BOSKS ANMYB OYFRU MUDON AJPXQ SSZNH VXPBP OGVCV MWOVJ XFTZT HRRDK BUGIY PASFR SKZNY IVILQ FWWWU XHVWA MUTZM AUUUV PTVXS DCAVI AHWOG XVIPY RUMQ";
+    
+    //remove spaces from ciphertext string
+    ciphertext_str.erase(remove_if(ciphertext_str.begin(), ciphertext_str.end(), ::isspace), ciphertext_str.end()); 
 
-    //string ciphertext = "avdxislqsbriuaanrhklthxcienagspxxckmqityaxejisgg";
-    //string ciphertext = "vuqxyugfyzfjgoccjkxlqvguczymjhpmjkyzoilsxlwtmccclwizqbetwthkkvilkruufwuu";
+    int len = ciphertext_str.length();
+
+    int ciphertext[len];
+    for (int i = 0; i < len; i++) {
+        ciphertext[i] = tolower(ciphertext_str[i]) - 97;
+    }
+
+    int testChunk = 18; //feeding only part of the chyphertext
+    keyDictAttack(ciphertext, testChunk, len); 
 
     return 0;
 }

@@ -1,56 +1,52 @@
 #include <string>
-#include <fstream>
-#include <unordered_map>           
+#include <fstream>       
 
 using namespace std;
 
 
-struct Weight {
-    double value;
-
-    Weight(double v) : value(v) {}
-
-    Weight() : value(-25.0) {}
-};
-
-double operator+=(double& lhs, const Weight& rhs) {
-    lhs += rhs.value;
-}
-
-//rewritten evaluate class that uses text file version of quadgram proportions because json requires external module to work 
-//(also slightly speedier than json)
-//some weird logic was required for the unordered map data structure
 class Evaluate {
     private:
-        unordered_map<string, Weight> idealQuadgramFrequencies;
+        double idealQuadgramFrequencies[456976];
         string quadgram;
         double weight;
 
     public:
         Evaluate() {
-            ifstream quadgramFile("evaluater/quadgram proportions.txt");
+            for (int i = 0; i < 456976; i++) {
+                idealQuadgramFrequencies[i] = -25.0;
+            }
+
+            ifstream quadgramFile("../evaluater/quadgram proportions.txt");
             while (quadgramFile >> quadgram >> weight) {
-                idealQuadgramFrequencies[quadgram] = weight;
+                idealQuadgramFrequencies[calculateHash(quadgram)] = weight;
             }
             quadgramFile.close();
         }
 
-        double evaluateQuadgramFrequencies(string plaintext) {
+        double evaluateQuadgramFrequencies(int* plaintext, int plaintext_len) {
             double fitness = 0;
-            string window = plaintext.substr(0, 4);
+            int currentHash = calculateHash(plaintext);
+            int first;
+            int last;
 
-            for (char letter: plaintext.substr(4)) {
-                fitness += idealQuadgramFrequencies[window];
+            for (int i = 0; i < plaintext_len - 4; i++) {
+                first = plaintext[i] * 17576;
+                last = plaintext[i + 4];
 
-                //window[0], window[1], window[2], window[3] = window[1], window[2], window[3], letter;
-                window[0] = window[1]; 
-                window[1] = window[2];
-                window[2] = window[3];
-                window[3] = letter;
+                fitness += idealQuadgramFrequencies[currentHash];
+
+                currentHash = 26 * (currentHash - first) + last;
             }
+
             return fitness;
         }
+
+        int calculateHash(int* quadgram) {
+            return quadgram[0] * 17576 + quadgram[1] * 676 + quadgram[2] * 26 + quadgram[3];
+        }
+
+        int calculateHash(string quadgram) {
+            return (quadgram[0] - 97) * 17576 + (quadgram[1] - 97) * 676 + (quadgram[2] - 97) * 26 + (quadgram[3] - 97);
+        }
 }; 
-
-
 
