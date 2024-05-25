@@ -15,7 +15,7 @@ _Under monoalphabeticSubstutitionCiphers folder_
 - **Unit 26: Keyword substitution cipher**✅
 
 _Under polyalhabeticSubstutitionCiphers folder_ 
-- Unit 29: Periodic polyalphabetic substitution cipher✅
+- Unit 29: Periodic polyalphabetic substitution cipher✅ - isn't as reliable as I'd like it to be
 - **Unit 33: Vigenère cipher**✅
 - Unit 39: Gronsfeld cipher (optional)✅
 - **Unit 40: Beaufort cipher**✅
