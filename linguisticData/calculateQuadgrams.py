@@ -14,6 +14,7 @@ def calculateLetterFrequencies():
     for letter in range(26):
         letterFrequencies.append([letter,0])
 
+    count = 0
     for line in lines:
 
         # removes accents like è becomes e and makes lower case
@@ -22,6 +23,7 @@ def calculateLetterFrequencies():
         for letter in line:
             if letter.isalpha():
                 letterFrequencies[ord(letter)-97][1] += 1
+                count += 1
 
     letterFrequencyValues = []
     for pair in letterFrequencies:
@@ -40,6 +42,14 @@ def calculateLetterFrequencies():
         json.dump(letterFrequencyLetters,file)
     with open("letterFrequenciesSorted.json","w") as file:
         json.dump(letterFrequencyValues,file)
+
+    normalisedLetterFrequencies = []
+    for letter in letterFrequencyValues:
+        normalisedLetterFrequencies.append(letter/count)
+    with open("letterFrequenciesSortedNormalised.json","w") as file:
+        json.dump(normalisedLetterFrequencies,file)
+
+calculateLetterFrequencies()
 
 def calculateQuadgramFrequencies():
     quadgramFrequencies = {}
@@ -104,6 +114,7 @@ def calculateBigramFrequencies():
         json.dump(bigramFrequenciesOrdered,file)
 
     hashMap = [-25]*(26**2)
+
     for quadgram,frequency in bigramFrequencies.items():
         hashMap[quadgram[0]*26+quadgram[1]] = log2(frequency/total)
 
