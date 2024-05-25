@@ -49,8 +49,6 @@ def calculateLetterFrequencies():
     with open("letterFrequenciesSortedNormalised.json","w") as file:
         json.dump(normalisedLetterFrequencies,file)
 
-calculateLetterFrequencies()
-
 def calculateQuadgramFrequencies():
     quadgramFrequencies = {}
 
