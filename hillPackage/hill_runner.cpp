@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./threadAffineHill.cpp"
+#include "./threadHill.cpp"
 
 using namespace std;
 
@@ -23,19 +23,19 @@ int main() {
     //33-40 recomended for bigrams
     int testChunk = 18; //feeding only part of the chyphertext
 
-    AffineHill cipherEngine(ciphertext, len);
+    Hill cipherEngine(ciphertext, len);
 
     //Fastest mode for m1 macbook air
-    cipherEngine.keyDictAttack(testChunk, 4, 0, true); 
+    //cipherEngine.keyDictAttack(testChunk, 4, 0, true); 
 
     //Debugging mode for m1 macbook air
-    //cipherEngine.keyDictAttack(testChunk, 3); 
+    cipherEngine.keyDictAttack(testChunk, 3); 
 
     return 0;
 }
 
 //Full terminal commands for whtn thread module not compiling properly:
 //  Compile:
-//      g++ -std=c++17 -o affineHill_runner affineHill_runner.cpp
+//      g++ -std=c++17 -o hill_runner hill_runner.cpp
 //  Execute:
-//      ./affineHill_runner
+//      ./hill_runner
