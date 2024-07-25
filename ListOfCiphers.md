@@ -73,7 +73,7 @@ _Under codes_
 - Unit 99: Codes
 - Unit 100: Baconian cipher
 - Unit 101: Triliteral cipher
-- **Unit 102: Morse code**
+- **Unit 102: Morse code**✅
 - Unit 103: Monome-dinome cipher
 - Unit 104: Straddling checkerboard cipher
 
