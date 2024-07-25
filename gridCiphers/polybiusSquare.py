@@ -8,7 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Now you can import from the parent directory
 from monoalphabeticSubstitutionCiphers.monoAlphabeticSubstitution import monoAlphabeticSubstitution
-from formatCipher import formatCipher
+from formatCipher import stringToInt
 # not sure if this importing works for everyone
 # 2021 mission 7A, 8B
 
@@ -32,5 +32,5 @@ class polybiusSquare(monoAlphabeticSubstitution): # also name the file the same 
             c = cipher[k:k+2]
             letterified += indices[c]
         # print(letterified)
-        return formatCipher(letterified)
+        return stringToInt(letterified)
     
