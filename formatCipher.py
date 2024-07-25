@@ -1,7 +1,15 @@
+from unidecode import unidecode
+
 # takes cipher string and formats it into array of integers
-def formatCipher(cipher):
+def stringToInt(cipher):
     formattedCipher = []
     for letter in cipher:
         if letter.isalpha():
-            formattedCipher.append(ord(letter.lower())-97)
+            formattedCipher.append(ord(unidecode(letter).lower())-97)
+    return formattedCipher
+
+def intToString(cipher):
+    formattedCipher = ""
+    for letter in cipher:
+        formattedCipher += chr(letter+97)
     return formattedCipher
