@@ -51,7 +51,7 @@ _Under gridCiphers folder_
 - **Unit 76: Phillips cipher**
 - Unit 78: Phillips-RC cipher (optional)
 - Unit 79: Double Playfair cipher
-- **Unit 80: Nihilist substitution cipher**
+- **Unit 80: Nihilist substitution cipher** ✅
 - Unit 81: Bifid cipher
 - Unit 82: Trifid cipher
 - **Unit 83: ADFGX cipher**
