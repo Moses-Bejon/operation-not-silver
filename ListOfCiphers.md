@@ -1,5 +1,5 @@
 **Methods (under linguisticData)**
-- Hill-clib attack
+- Hill-climb attack
 - Index of Coincidence analysis
 - Brute Force
 - n-grams analysis
