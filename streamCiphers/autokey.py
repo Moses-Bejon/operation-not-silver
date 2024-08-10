@@ -112,12 +112,12 @@ class autokey(polyalphabeticSubstitution):
 
     # optimise decryption process
     def simulatedAnnealing(self, keyLength, initialTemp=100.0, coolingRate=0.95, maxIter=1000):
-        currentKey = [random.randint(0, 25) for _ in range(keyLength)]  # Start with a random key
+        currentKey = [random.randint(0, 25) for _ in range(keyLength)]  
         bestKey = currentKey[:]  
         bestDecryption = None  
         bestScore = float('-inf')  
 
-        temperature = initialTemp  # Set the initial temperature
+        temperature = initialTemp  
 
         for iteration in range(maxIter):
             candidateKey = currentKey[:]
