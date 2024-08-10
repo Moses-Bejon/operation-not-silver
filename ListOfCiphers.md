@@ -64,7 +64,7 @@ _Under matricesCiphers_✅ (2x2)
 _Under streamCiphers_
 - Unit 90: Stream ciphers
 - Unit 91: Trithemius cipher
-- **Unit 92: Autokey cipher**
+- **Unit 92: Autokey cipher** ✅ - Beaufort variant not covered 
 - **Unit 95: Running-key cipher**
 - Unit 96: Progressive Vigenère cipher
 - **Unit 97: Solitaire cipher**
