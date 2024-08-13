@@ -141,11 +141,11 @@ class autokey:
         return bestKey, intToString(bestDecryption)
 
 
-cipherText = "IVIDVWYYSWAFNTVFDLJQVDAELSGSMSXEEMPWGRGWPQTPOFEACINUPHQYEPXMZSVVHPYXBROOHKVWOXNYIXWWLASKMEYEWXLCUPBKAWSHTALFWBMJGJXMDBZWYWDEMZMPAJDVTBQJTHNXQJTHVORWGUIYGKLHSPXKPIMUFPNWNLPBYWUXXKXQPRGLGVWATPKGSOKEEROOXAAQQNRWSUZTRWSENRMVPASQHBDJSAFRJYHIEJCHDEEXTBOXFJQRKTGJQQHLWSAPPTWIWV"
-cipherText = stringToInt(cipherText)
-autokeyCipher = autokey(cipherText)
+# cipherText = "IVIDVWYYSWAFNTVFDLJQVDAELSGSMSXEEMPWGRGWPQTPOFEACINUPHQYEPXMZSVVHPYXBROOHKVWOXNYIXWWLASKMEYEWXLCUPBKAWSHTALFWBMJGJXMDBZWYWDEMZMPAJDVTBQJTHNXQJTHVORWGUIYGKLHSPXKPIMUFPNWNLPBYWUXXKXQPRGLGVWATPKGSOKEEROOXAAQQNRWSUZTRWSENRMVPASQHBDJSAFRJYHIEJCHDEEXTBOXFJQRKTGJQQHLWSAPPTWIWV"
+# cipherText = stringToInt(cipherText)
+# autokeyCipher = autokey(cipherText)
 
-keyLength = autokeyCipher.bruteForceAutokey(maxKeyLength=20)
-bestKey, decryptedText = autokeyCipher.simulatedAnnealing(keyLength)
-print("Best Key:", bestKey)
-print("Decrypted Text:", decryptedText)
+# keyLength = autokeyCipher.bruteForceAutokey(maxKeyLength=20)
+# bestKey, decryptedText = autokeyCipher.simulatedAnnealing(keyLength)
+# print("Best Key:", bestKey)
+# print("Decrypted Text:", decryptedText)
