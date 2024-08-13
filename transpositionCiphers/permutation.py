@@ -1,4 +1,5 @@
 import random
+from permutationKey import permutationKey
 
 class permutation():
 
@@ -8,37 +9,34 @@ class permutation():
         length = len(self.__cipher)
 
         # length of key is a factor of the length of the cipher text
-        self.__keyLengths = []
+        keyLengths = []
 
-        for possibleFactor in range(2,int(length ** 0.5)):
+        for possibleFactor in range(2,int(length ** 0.5)+1):
             if length % possibleFactor == 0:
-                self.__keyLengths.append(possibleFactor)
+                keyLengths.append(possibleFactor)
 
-        self.__keyLength = random.choice(self.__keyLengths)
-        self.__key = list(range(self.__keyLength))
+        self.__key = permutationKey(keyLengths)
 
 
     def shuffle(self):
-        if random.random()>0.5:
-            self.__rollAmount = False
-            self.__choices = random.sample(self.__key,k=2)
-            self.__key[self.__choices[0]],self.__key[self.__choices[1]]=self.__key[self.__choices[1]],self.__key[self.__choices[0]]
-        else:
-            self.__rollAmount = random.randint(1, self.__keyLength - 1)
-            self.__key = self.__key[self.__rollAmount:] + self.__key[:self.__rollAmount]
+        self.__key.shuffle()
+
     def shake(self):
-        self.__keyLength = random.choice(self.__keyLengths)
-        self.__key = list(range(self.__keyLength))
+        self.__key.shake()
 
     def undoShuffle(self):
-        if self.__rollAmount:
-            self.__key = self.__key[self.__keyLength - self.__rollAmount:] + self.__key[:self.__keyLength - self.__rollAmount]
-        else:
-            self.__key[self.__choices[0]], self.__key[self.__choices[1]] = self.__key[self.__choices[1]], self.__key[self.__choices[0]]
+        self.__key.undoShuffle()
+
     def decipher(self):
+
+        key = self.__key.getKey()
+        keyLength = self.__key.getLength()
+
         plainText = []
-        for place in range(0, len(self.__cipher), self.__keyLength):
-            row = self.__cipher[place:place + self.__keyLength]
-            for value in self.__key:
+        for place in range(0, len(self.__cipher), keyLength):
+            row = self.__cipher[place:place + keyLength]
+            for value in key:
                 plainText.append(row[value])
         return plainText
+
+
