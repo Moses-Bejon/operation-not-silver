@@ -4,11 +4,14 @@ import math
 from evaluate import getIOC, getEntropy, getLetterFrequencies, normaliseLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
 from formatCipher import stringToInt, intToString
 
-class polyalphabeticSubstitution:
+class autokey:
     def __init__(self, cipher):
         self.cipher = cipher
         self.period, self.frequencies = self.getPeriod()
         self.key = self.getKey()
+        self.bestKey = None
+        self.bestDecryption = None
+        self.bestScore = float('-inf')
 
     def getPeriod(self):
         # lowest possible score
@@ -16,7 +19,7 @@ class polyalphabeticSubstitution:
         maxPeriod = 1
 
         # trying out different periods to see which fits best (up to cipher length)
-        for n in range(2, int(len(self.cipher) ** 0.5)+1):
+        for n in range(2, int(len(self.cipher) ** 0.5) + 1):
 
             # these are the different slices of the cipher text
             slices = [[] for _ in range(n)]
@@ -43,30 +46,18 @@ class polyalphabeticSubstitution:
 
         # empty frequency list to be populated later
         return maxPeriod, []
-
     def getKey(self):
         key = []
         with open("lettersRanked.json", "r") as file:
             idealRank = json.load(file)
 
-            # formulates key based on letter frequencies to get a good starting guess
         for frequency in self.frequencies:
-
             letterFrequencies = sorted(enumerate(frequency), key=lambda x: x[1], reverse=True)
-
             alphabet = {}
             for i in range(26):
                 alphabet[letterFrequencies[i][0]] = idealRank[i]
             key.append(alphabet)
         return key
-
-
-class autokey(polyalphabeticSubstitution):
-    def __init__(self, cipher):
-        super().__init__(cipher)
-        self.bestKey = None
-        self.bestDecryption = None
-        self.bestScore = float('-inf')
 
     def decipher(self, cipherText, key):
         plainText = []
@@ -75,10 +66,9 @@ class autokey(polyalphabeticSubstitution):
         # calculate shift from key and reverse shift to decrypt char
         for char in cipherText:
             shift = key[keyIndex % len(key)]
-            decryptedChar = (char-shift) % 26
+            decryptedChar = (char - shift) % 26
             plainText.append(decryptedChar)
             keyIndex += 1
-            # update the key with plainText char
             key.append(decryptedChar)
         return plainText
 
@@ -98,9 +88,9 @@ class autokey(polyalphabeticSubstitution):
         bestScore = float('-inf')
 
         # try key lengths from 1 to maxKeyLength, test 500 random keys for each key length
-        for keyLength in range(1, maxKeyLength+1):
+        for keyLength in range(1, maxKeyLength + 1):
             for _ in range(500):
-                key = [random.randint(0,25) for _ in range(keyLength)]
+                key = [random.randint(0, 25) for _ in range(keyLength)]
                 decryptedText = self.decipher(self.cipher, key)
                 score = self.evaluateDecryption(decryptedText)
 
@@ -112,12 +102,12 @@ class autokey(polyalphabeticSubstitution):
 
     # optimise decryption process
     def simulatedAnnealing(self, keyLength, initialTemp=100.0, coolingRate=0.95, maxIter=1000):
-        currentKey = [random.randint(0, 25) for _ in range(keyLength)]  
-        bestKey = currentKey[:]  
-        bestDecryption = None  
-        bestScore = float('-inf')  
+        currentKey = [random.randint(0, 25) for _ in range(keyLength)]
+        bestKey = currentKey[:]
+        bestDecryption = None
+        bestScore = float('-inf')
 
-        temperature = initialTemp  
+        temperature = initialTemp
 
         for iteration in range(maxIter):
             candidateKey = currentKey[:]
@@ -151,12 +141,11 @@ class autokey(polyalphabeticSubstitution):
         return bestKey, intToString(bestDecryption)
 
 
-# cipherText = "PLEKLARLUSGSOSAOWAWLQWGBLSBLUFPAVSGNAPDLIPLHTGBCARDAQEIVVJGVQHVMQOVGKIPHISELWDWHWFFTWJFRHIPYIGNGOSGFZABUKNIKFQAIFXBFVRTXKMPBPUPPRVSCZEVQAEUXZBXNHWXZHBOAVHWNKALQDCGEJWOFRMSRMNFRPVNMGJOIMAKMYAMNHXMOEKTOKWVSISRXUQWJITEJPWOSQTGSHDSKNSXMPSDCASLOZNLKFAZTNHJJZEQXIYPFYOGEOVGRYLENSSPDNSPKHTWJMNHAMCYMOSLHIRORSMOKSMHBUDMVQGKMAGNLQAQQAZOSDEEGPPPZGDMSQEPTPILMWMVVVTVVFVQZSVK"
-# cipherText = stringToInt(cipherText)
-# autokeyCipher = autokey(cipherText)
+cipherText = "IVIDVWYYSWAFNTVFDLJQVDAELSGSMSXEEMPWGRGWPQTPOFEACINUPHQYEPXMZSVVHPYXBROOHKVWOXNYIXWWLASKMEYEWXLCUPBKAWSHTALFWBMJGJXMDBZWYWDEMZMPAJDVTBQJTHNXQJTHVORWGUIYGKLHSPXKPIMUFPNWNLPBYWUXXKXQPRGLGVWATPKGSOKEEROOXAAQQNRWSUZTRWSENRMVPASQHBDJSAFRJYHIEJCHDEEXTBOXFJQRKTGJQQHLWSAPPTWIWV"
+cipherText = stringToInt(cipherText)
+autokeyCipher = autokey(cipherText)
 
-# keyLength = autokeyCipher.bruteForceAutokey(maxKeyLength=20)
-
-# bestKey, decryptedText = autokeyCipher.simulatedAnnealing(keyLength)
-# print("Best Key:", bestKey)
-# print("Decrypted Text:", decryptedText)
+keyLength = autokeyCipher.bruteForceAutokey(maxKeyLength=20)
+bestKey, decryptedText = autokeyCipher.simulatedAnnealing(keyLength)
+print("Best Key:", bestKey)
+print("Decrypted Text:", decryptedText)
