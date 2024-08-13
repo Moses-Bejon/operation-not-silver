@@ -1,4 +1,3 @@
-import random
 from permutationKey import permutationKey
 
 class permutation():
