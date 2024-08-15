@@ -36,7 +36,7 @@ _Under transpositionCiphers folder_
 - **Unit 60: Columnar transposition cipher**✅
 - Unit 61: Double columnar transposition cipher✅
 - **Unit 62: Nihilist transposition cipher**✅ - some variants not covered
-- **Unit 63: Railfence cipher**✅
+- **Unit 63: Railfence cipher**✅ - can technically be further optimised but likely isn't necessary
 - Unit 64: Redefence cipher (optional)
 - Unit 65: AMSCO cipher
 - Unit 66: Myszkowsky cipher (optional)
