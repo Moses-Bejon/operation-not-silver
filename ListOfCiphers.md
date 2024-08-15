@@ -36,14 +36,14 @@ _Under transpositionCiphers folder_
 - **Unit 60: Columnar transposition cipher**✅
 - Unit 61: Double columnar transposition cipher✅
 - **Unit 62: Nihilist transposition cipher**✅ - some variants not covered
-- **Unit 63: Railfence cipher**
+- **Unit 63: Railfence cipher**✅
 - Unit 64: Redefence cipher (optional)
 - Unit 65: AMSCO cipher
 - Unit 66: Myszkowsky cipher (optional)
 - **Unit 67: Cadenus cipher**
 
 _Under gridCiphers folder_
-- **Unit 69: Polybius cipher**
+- **Unit 69: Polybius cipher**✅
 - **Unit 70: Playfair cipher**
 - Unit 72: Vertical two-square cipher
 - Unit 73: Horizontal two-square cipher
