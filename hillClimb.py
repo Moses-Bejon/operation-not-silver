@@ -1,3 +1,5 @@
+from formatCipher import intToString
+
 # a hill climb attack continuously randomly shuffles the key and only keeps the shuffle if it was superior to the last
 
 # the cipher parameter is the cipher object with methods .decipher etc. It should already be instantiated.
@@ -24,7 +26,7 @@ def hillClimb(cipher,evaluate):
 
         # we should only tell the user if we've actually made progress
         if score > actualMaxScore:
-            print(plainText)
+            print(intToString(plainText))
             print(score)
             print(count)
             actualMaxScore = score
