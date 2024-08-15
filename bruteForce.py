@@ -1,4 +1,6 @@
 from math import inf
+from formatCipher import intToString
+
 def bruteForce(cipher,evaluate):
     maxScore = -inf
 
@@ -7,6 +9,6 @@ def bruteForce(cipher,evaluate):
 
         # we should only tell the user if we've made progress
         if score > maxScore:
-            print(plainText)
+            print(intToString(plainText))
             print(score)
             maxScore = score
