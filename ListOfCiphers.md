@@ -40,7 +40,7 @@ _Under transpositionCiphers folder_
 - Unit 64: Redefence cipher (optional)
 - Unit 65: AMSCO cipher
 - Unit 66: Myszkowsky cipher (optional)
-- **Unit 67: Cadenus cipher**
+- **Unit 67: Cadenus cipher**✅ - can be further optimised
 
 _Under gridCiphers folder_
 - **Unit 69: Polybius cipher**✅
