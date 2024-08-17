@@ -17,7 +17,6 @@ def hillClimb(cipher,evaluate):
 
     while True:
         count += 1
-        withoutClimbing += 1
 
         cipher.shuffle()
 
@@ -29,20 +28,23 @@ def hillClimb(cipher,evaluate):
             print(intToString(plainText))
             print(score)
             print(count)
+
             actualMaxScore = score
             maxScore = score
 
         elif score > maxScore:
             maxScore = score
+            withoutClimbing = 0
 
         else:
             cipher.undoShuffle()
+            withoutClimbing += 1
 
             # used to break out of local maxima (the effectiveness of the randomly chosen constants 5000 and 10 will
             # vary in effectiveness based on the cipher type, if we wanted to make really good software we might
             # call cipher.getOptimalShuffleAmount() in these places and finely tune each cipher but these seem like good
             # general values)
-            if withoutClimbing > 5000:
+            if withoutClimbing > 500:
                 try:
                     cipher.shake()
                 except AttributeError:
