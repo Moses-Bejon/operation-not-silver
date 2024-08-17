@@ -1,9 +1,12 @@
 from monoAlphabeticSubstitution import monoAlphabeticSubstitution
+from columnarSubstitution import columnarSubstitution
 from evaluate import getLetterFrequencies,getIOC,getEntropy,normaliseLetterFrequencies
 from hillClimbKeyFinder import hillClimbKeyFinder
 
+# note: this cipher can be slightly unreliable, it may take up to 5 attempts to get the correct answer with short ciphertexts and long keys
+
 class ADFGX():
-    def __init__(self,cipher,transpositionCipher):
+    def __init__(self,cipher,transpositionCipher=columnarSubstitution):
         formattedCipher = self.formatCipher(cipher)
         self.__length = len(self.formatCipher(cipher))
 
@@ -14,7 +17,7 @@ class ADFGX():
         keys = hillClimbKeyFinder(self.__transpositionCipher, self.keyFinderEvaluator, 100000, 20)
         print("I have found the following keys with the following scores: ",keys)
 
-        self.setKeyCandidates(keys[0])
+        self.setKeyCandidates(keys[0][::-1])
 
     def formatCipher(self,cipher):
         formattedCipher = []
