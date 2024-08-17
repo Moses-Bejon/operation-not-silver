@@ -38,4 +38,8 @@ class permutation():
                 plainText.append(row[value])
         return plainText
 
+    def getKey(self):
+        return self.__key.getKey()
 
+    def injectKey(self,key):
+        self.__key.injectKey(key)
