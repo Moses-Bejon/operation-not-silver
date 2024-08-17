@@ -54,7 +54,7 @@ _Under gridCiphers folder_
 - **Unit 80: Nihilist substitution cipher** ✅ - Contains a bug, does not solve all exercises in the cipher book
 - Unit 81: Bifid cipher
 - Unit 82: Trifid cipher
-- **Unit 83: ADFGX cipher**
+- **Unit 83: ADFGX cipher**✅ - Quite unreliable, may take multiple attempts to decrypt
 - **Unit 84: ADFGVX cipher**
 
 _Under matricesCiphers_✅ (2x2)
