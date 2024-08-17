@@ -22,7 +22,7 @@ class cadenus():
         # yes, this is quite an inefficient way to do this
         # I don't care because it's clean and this step is only done once
         # it will never make up a significant proportion of total computation time of the algorithm
-        for i in range(2,self.__totalRows):
+        for i in range(2,self.__totalRows+1):
             if self.__totalRows%i == 0:
                 possibleKeyLengths.append(i)
 
