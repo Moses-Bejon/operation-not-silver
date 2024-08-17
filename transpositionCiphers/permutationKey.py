@@ -35,3 +35,7 @@ class permutationKey():
 
     def getLength(self):
         return self.__keyLength
+
+    def injectKey(self,key):
+        self.__key = key
+        self.__keyLength = len(self.__key)
