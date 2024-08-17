@@ -1,4 +1,5 @@
 from permutationKey import permutationKey
+import random
 
 class columnarSubstitution():
 
@@ -13,8 +14,12 @@ class columnarSubstitution():
         self.__key.shuffle()
 
     def shake(self):
-        self.__key.shake()
-        self.updateKeyLength()
+        if random.random() > 0.5:
+            self.__key.shake()
+            self.updateKeyLength()
+        else:
+            for _ in range(3):
+                self.__key.shuffle()
 
     def updateKeyLength(self):
         self.__keyLength = self.__key.getLength()
@@ -23,7 +28,9 @@ class columnarSubstitution():
     def undoShuffle(self):
         self.__key.undoShuffle()
 
-    
+    def getKey(self):
+        return self.__key.getKey()
+
     def decipher(self):
         # this decipher function is really efficient, at the cost of being really unreadable
         plainText = []
@@ -50,3 +57,7 @@ class columnarSubstitution():
             plainText.append(self.__cipher[lengthLeadingUpTo[column]+self.__numberOfFilledRows])
 
         return plainText
+
+    def injectKey(self,key):
+        self.__key.injectKey(key)
+        self.updateKeyLength()
