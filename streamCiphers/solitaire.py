@@ -62,22 +62,22 @@ class solitaire:
                 deck.insert(2, deck.pop())
             else:
                 deck.insert(1, deck.pop())
-        elif deck[-1] == self.jokerB:
+        elif deck[-2] == self.jokerB:
             deck.insert(1, deck.pop())
         else:
             index = deck.index(self.jokerB)
-            deck[index], deck[(index+2) % len(deck)] = deck[(index+2) % len(deck)], deck[index]
+            deck.insert((index + 2) % len(deck), deck.pop(index))
 
     # triple cut - swap stack of cards above 1st joker with stack of cards below 2nd joker
     # 1st joker = joker close to the top
     def tripleCut(self, deck):
         firstJoker = min(deck.index(self.jokerA), deck.index(self.jokerB))
         secondJoker = max(deck.index(self.jokerA), deck.index(self.jokerB))
-        deck = deck[secondJoker+1:] + deck[firstJoker:secondJoker+1] + deck[:firstJoker]
+        deck = deck[secondJoker + 1:] + deck[firstJoker:secondJoker + 1] + deck[:firstJoker]
         return deck
 
     # count cut -  Look at the bottom card. If it is a joker, do nothing for this step.
-    # Else - take the number corresponding to that card and do a count cut by taking a stack of that many card off the top of he deck and putting that stack just above the bottom card.
+    # Else - take the number corresponding to that card and do a count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
 
     def countCut(self, deck):
         bottomVal = self.cardVal(deck[-1])
@@ -86,12 +86,12 @@ class solitaire:
         deck = deck[bottomVal:-1] + deck[:bottomVal] + [deck[-1]]
         return deck
 
-    # Convert the letter of the keyword to a number, where ‘A’ = 1, ‘B’ = 2, ‘C’ = 3, ..., ‘Z’ = 26
-    # do another count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
-    def addCountCut(self, deck, letter):
-        countVal = self.letterToNum(letter)
-        deck = deck[countVal - 1:] + deck[:countVal - 1] + [deck[-1]]
-        return deck
+    # # Convert the letter of the keyword to a number, where ‘A’ = 1, ‘B’ = 2, ‘C’ = 3, ..., ‘Z’ = 26
+    # # do another count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
+    # def addCountCut(self, deck, letter):
+    #     countVal = self.letterToNum(letter)
+    #     deck = deck[countVal - 1:] + deck[:countVal - 1] + [deck[-1]]
+    #     return deck
 
     def cardVal(self, card):
         if card == self.jokerA or card == self.jokerB:
@@ -106,14 +106,28 @@ class solitaire:
             deck = self.tripleCut(deck)
             deck = self.countCut(deck)
 
-            topVal = self.cardVal(deck[0])
-            if topVal == 53:
-                topVal = 52
+            topVal = deck[0]
+            if topVal in [self.jokerA, self.jokerB]:
+                continue
 
-            keystreamVal = deck[topVal]
-            if keystreamVal not in [self.jokerA, self.jokerB]:
-                return keystreamVal
+            # Take stack of topVal cards off deck
+            stack = deck[1:topVal + 1]
+            remainingDeck = deck[topVal + 1:]
 
+            # New top card after stack 
+            newTopVal = remainingDeck[0]
+            # Put stack back on top of deck
+            deck = stack + remainingDeck
+
+            # if newTopVal = 53, repeat from step 1
+            if newTopVal == 53:
+                continue
+            elif newTopVal > 26:
+                newTopVal -= 26
+
+            return newTopVal
+
+    # generate required length of keystream
     def generateKeystream(self, deck, length):
         keystream = []
         for _ in range(length):
@@ -152,4 +166,4 @@ cipherText =("SCYWLWXCACDWWIFZSXIMHVMBRIWHCLNLMZIHHWWCHVOZNJCKPPALVNMGFNJRLCQFHD
 print(solitaire.decipher(cipherText, solitaire.keyedDeck))
 print(f'Solitaire key deck: {solitaire.keyedDeck}')
 
-
+# Decrypt: ANDTHENABRUPTLYANDUNBIDDENTHERECAMEINTOMYMINDASTORYOFTHEOLDWESTTHESTORYOFHOWINTHEPIONEERDAYSAGAMBLERSITTINGDOWNTOPLAYSOLITAIRELAIDHISGUNONTHETABLEBESIDEHIMANDIFHECAUGHTHIMSELFCHEATINGADMINISTEREDJUSTICEFIRSTHANDBYSHOOTINGHIMSELFXX
