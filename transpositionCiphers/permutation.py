@@ -43,3 +43,6 @@ class permutation():
 
     def injectKey(self,key):
         self.__key.injectKey(key)
+
+    def getNumberOfKeys(self):
+        return self.__key.getNumberOfKeys()
