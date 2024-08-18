@@ -9,6 +9,12 @@ from math import inf
 # because you can try out multiple keys as the first key, this hill climb outputs its top n keys rather than just one
 
 def hillClimbKeyFinder(cipher,evaluate,iterations,numberOfCandidates):
+    def shuffleShake():
+        for _ in range(3):
+            cipher.shuffle()
+
+    shake = cipher.shake
+    nextLimit = 500*cipher.getNumberOfKeys()
     candidates = ["placeHolderKey"]*numberOfCandidates
     candidateScores = [-inf]*numberOfCandidates
 
@@ -35,8 +41,8 @@ def hillClimbKeyFinder(cipher,evaluate,iterations,numberOfCandidates):
                     candidateScores[i-1] = score
                     break
             else:
-                candidates[numberOfCandidates - 1] = cipher.getKey().copy()
-                candidateScores[numberOfCandidates - 1] = score
+                candidates[-1] = cipher.getKey().copy()
+                candidateScores[-1] = score
                 withoutClimbing = 0
 
         else:
@@ -47,16 +53,23 @@ def hillClimbKeyFinder(cipher,evaluate,iterations,numberOfCandidates):
             # vary in effectiveness based on the cipher type, if we wanted to make really good software we might
             # call cipher.getOptimalShuffleAmount() in these places and finely tune each cipher but these seem like good
             # general values)
-            if withoutClimbing > 500:
+            if withoutClimbing > 50:
 
                 # we will only check if the count exceeds the iterations if we haven't climbed in a while
                 # wouldn't want to stop while we're making progress
-                if count >= iterations:
-                    return (candidates,candidateScores)
+                if count >= nextLimit:
+                    shake = shuffleShake
+                    nextLimit = iterations
+
+                    cipher.injectKey(candidates[-1])
+
+                    if count >= iterations:
+                        return (candidates,candidateScores)
 
                 try:
-                    cipher.shake()
+                    shake()
                 except AttributeError:
-                    for _ in range(10):
+                    for _ in range(3):
                         cipher.shuffle()
+
                 withoutClimbing = 0
