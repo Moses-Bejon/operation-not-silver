@@ -39,7 +39,12 @@ class ADFGVX(ADFGX):
 
         frequencies,total = getLetterAndNumberFrequencies(polybiusified)
 
-        return getIOC(frequencies,total)*getLetterAndNumberEntropy(normaliseLetterFrequencies(frequencies,total))
+        emptySpots = 0
+        for frequency in frequencies:
+            if frequency == 0:
+                emptySpots += 1
+
+        return getIOC(frequencies,total)*getLetterAndNumberEntropy(normaliseLetterFrequencies(frequencies,total))*emptySpots
 
     def shake(self):
         self._place += 1
