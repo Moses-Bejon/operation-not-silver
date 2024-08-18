@@ -55,7 +55,7 @@ _Under gridCiphers folder_
 - Unit 81: Bifid cipher
 - Unit 82: Trifid cipher
 - **Unit 83: ADFGX cipher**✅ - isn't as reliable as I'd like it to be
-- **Unit 84: ADFGVX cipher**
+- **Unit 84: ADFGVX cipher**✅ - isn't as reliable as I'd like it to be
 
 _Under matricesCiphers_✅ (2x2)
 - **Unit 87: Hill cipher**✅
