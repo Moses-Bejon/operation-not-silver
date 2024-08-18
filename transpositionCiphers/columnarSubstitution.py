@@ -31,6 +31,9 @@ class columnarSubstitution():
     def getKey(self):
         return self.__key.getKey()
 
+    def getNumberOfKeys(self):
+        return self.__key.getNumberOfKeys()
+
     def decipher(self):
         # this decipher function is really efficient, at the cost of being really unreadable
         plainText = []
