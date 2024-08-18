@@ -6,7 +6,7 @@ def getIOC(letterFrequencies,total):
     return sum(letter*(letter-1) for letter in letterFrequencies)/(total*(total-1))
 
 # letter frequencies must be sorted and normalised
-with open("letterFrequenciesSortedNormalised.json","r") as file:
+with open("Text analysis/letterFrequenciesSortedNormalised.json","r") as file:
     idealLetterFrequenciesSortedNormalised = json.load(file)
 def getTwist(letterFrequencies):
     twist = 0
@@ -24,6 +24,16 @@ def getEntropy(letterFrequencies):
             entropy += frequency*1.5
     return entropy
 
+# frequencies must be normalised
+def getLetterAndNumberEntropy(frequencies):
+    entropy = 0
+    for frequency in frequencies:
+        try:
+            entropy -= frequency * log(frequency, 36)
+        except:
+            entropy += frequency * 1.5
+    return entropy
+
 def getLetterFrequencies(plainText):
     letterFrequencies = [0]*26
     total = 0
@@ -32,6 +42,15 @@ def getLetterFrequencies(plainText):
         total += 1
     return (letterFrequencies,total)
 
+
+def getLetterAndNumberFrequencies(plainText):
+    frequencies = [0] * 36
+    total = 0
+    for character in plainText:
+        frequencies[character] += 1
+        total += 1
+    return (frequencies, total)
+
 def normaliseLetterFrequencies(letterFrequencies,total):
     normalisedLetterFrequencies = []
     for letter in letterFrequencies:
@@ -39,12 +58,12 @@ def normaliseLetterFrequencies(letterFrequencies,total):
     return normalisedLetterFrequencies
 
 # letter frequencies must be sorted
-with open("letterFrequenciesSorted.json") as file:
+with open("Text analysis/letterFrequenciesSorted.json") as file:
     idealLetterFrequenciesSorted = json.load(file)
 def getVectorEvaluationSubstituted(letterFrequencies):
     return dot(letterFrequencies,idealLetterFrequenciesSorted)/(linalg.norm(letterFrequencies)*linalg.norm(idealLetterFrequenciesSorted))
 
-with open("letterFrequenciesUnsorted.json","r") as file:
+with open("Text analysis/letterFrequenciesUnsorted.json","r") as file:
     idealLetterFrequenciesUnsorted = array(json.load(file),dtype=uintc)
 def evaluateLetterFrequenciesUnsubstituted(plainText):
     letterFrequencies = zeros(26, dtype=uintc)
@@ -54,7 +73,7 @@ def evaluateLetterFrequenciesUnsubstituted(plainText):
                 linalg.norm(letterFrequencies) * linalg.norm(idealLetterFrequenciesUnsorted))
 
 # a much better, and computationally cheaper, approach. Logged quadgram frequencies (the more negative, the less similar)
-with open("quadgram proportions.json","r") as file:
+with open("Text analysis/quadgram proportions.json","r") as file:
     idealQuadgramFrequencies = json.load(file)
 def evaluateQuadgramFrequencies(plainText):
 
@@ -68,7 +87,21 @@ def evaluateQuadgramFrequencies(plainText):
         currentHash = 26*(currentHash-first)+last
     return fitness
 
-with open("bigram proportions.json","r") as file:
+with open("Text analysis/alphanumeric quadgram proportions.json","r") as file:
+    idealAlphanumericQuadgramFrequencies = json.load(file)
+def evaluateAlphanumericQuadgramFrequencies(plainText):
+
+    currentHash = plainText[0] * 46656 + plainText[1] * 1296 + plainText[2] * 36 + plainText[3]
+
+    fitness = 0
+    for i in range(len(plainText) - 4):
+        first = plainText[i] * 46656
+        last = plainText[i + 4]
+        fitness += idealAlphanumericQuadgramFrequencies[currentHash]
+        currentHash = 36 * (currentHash - first) + last
+    return fitness
+
+with open("Text analysis/bigram proportions.json","r") as file:
     idealBigramFrequencies = json.load(file)
 def evaluateBigramFrequencies(plainText):
 
