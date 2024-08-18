@@ -88,7 +88,7 @@ class solitaire:
 
     # Convert the letter of the keyword to a number, where ‘A’ = 1, ‘B’ = 2, ‘C’ = 3, ..., ‘Z’ = 26
     # do another count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
-    def addCountCut(self ,deck, letter):
+    def addCountCut(self, deck, letter):
         countVal = self.letterToNum(letter)
         deck = deck[countVal - 1:] + deck[:countVal - 1] + [deck[-1]]
         return deck
@@ -108,35 +108,30 @@ class solitaire:
 
             topVal = self.cardVal(deck[0])
             if topVal == 53:
-                return 52
+                topVal = 52
 
-            if topVal <= len(deck):
-                keystreamVal = deck[topVal-1]
-            else:
-                continue
-
+            keystreamVal = deck[topVal]
             if keystreamVal not in [self.jokerA, self.jokerB]:
                 return keystreamVal
 
     def generateKeystream(self, deck, length):
         keystream = []
         for _ in range(length):
-            keystreamVal = self.generateKeystreamVal(deck.copy())
-            if keystreamVal == 53:
-                continue
-            elif keystreamVal > 26:
-                keystreamVal -= 26
-            keystream.append(self.numToLetter(keystreamVal))
+            keystream.append(self.generateKeystreamVal(deck))
         return keystream
 
-    def decipher(self, cipherText):
-        keystream = self.generateKeystream(self.keyedDeck.copy(), len(cipherText))
+    def decipher(self, cipherText, deck):
+        keystream = self.generateKeystream(deck.copy(), len(cipherText))
+        print(f'Keystream: {keystream}')
+        print(deck)
 
         plainText = []
         for i, letter in enumerate(cipherText):
             cipherVal = self.letterToNum(letter)
-            keyVal = self.letterToNum(keystream[i])
-            plainVal = (cipherVal - keyVal - 1) % 26 + 1
+            keyVal = keystream[i] % 26
+            plainVal = (cipherVal - keyVal - 1) % 26
+            if plainVal == 0:
+                plainVal = 26
             plainText.append(self.numToLetter(plainVal))
 
         return ''.join(plainText)
@@ -154,7 +149,7 @@ deckConfig = [
 solitaire = solitaire(deckConfig)
 cipherText =("SCYWLWXCACDWWIFZSXIMHVMBRIWHCLNLMZIHHWWCHVOZNJCKPPALVNMGFNJRLCQFHDKNHZHKRAGIFXGKQQSLNEDGKOTOFRFNZAJOWWVZAPGGMLURKZGQDMHEHKYEBLRUPMRPKFHFFMCIDKGYLOFLQQLSOMYAEGCPDYRWWJLTXRKQLOLXGCHCSCQMDUKZWMLMKNTHMJQNVORTTIDRHQZBEIJCJNTMRTHYNVGAID")
 
-print(solitaire.decipher(cipherText))
-print(solitaire.keyedDeck)
+print(solitaire.decipher(cipherText, solitaire.keyedDeck))
+print(f'Solitaire key deck: {solitaire.keyedDeck}')
 
 
