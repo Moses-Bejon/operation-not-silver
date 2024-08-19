@@ -45,46 +45,44 @@ class solitaire:
         val, _ = suits[suit]
         return val + rank-1
 
-    def moveJokerA(self, deck):
+    def moveJokerA(self):
         # If jokerA on bottom, put it just after the top card, else swap joker A with card below it
-        if deck[-1] == self.jokerA:
-            deck.insert(1, deck.pop())
+        if self.__deck[-1] == self.jokerA:
+            self.__deck.insert(1, self.__deck.pop())
         else:
-            index = deck.index(self.jokerA)
-            deck[index], deck[index+1] = deck[index+1], deck[index]
+            index = self.__deck.index(self.jokerA)
+            self.__deck[index], self.__deck[index+1] = self.__deck[index+1], self.__deck[index]
 
-    def moveJokerB(self, deck):
+    def moveJokerB(self):
         # If joker B is on the bottom of the deck, put it just after the second card.
         # If joker B is the second to-last card, put it just after the top card.
         # If neither of these is the case, move joker B down by two cards.
-        if deck[-1] == self.jokerB:
-            if len(deck) > 2:
-                deck.insert(2, deck.pop())
+        if self.__deck[-1] == self.jokerB:
+            if len(self.__deck) > 2:
+                self.__deck.insert(2, self.__deck.pop())
             else:
-                deck.insert(1, deck.pop())
-        elif deck[-2] == self.jokerB:
-            deck.insert(1, deck.pop())
+                self.__deck.insert(1, self.__deck.pop())
+        elif self.__deck[-2] == self.jokerB:
+            self.__deck.insert(1, self.__deck.pop(-2))
         else:
-            index = deck.index(self.jokerB)
-            deck.insert((index + 2) % len(deck), deck.pop(index))
+            index = self.__deck.index(self.jokerB)
+            self.__deck.insert((index + 2) % len(self.__deck), self.__deck.pop(index))
 
     # triple cut - swap stack of cards above 1st joker with stack of cards below 2nd joker
     # 1st joker = joker close to the top
-    def tripleCut(self, deck):
-        firstJoker = min(deck.index(self.jokerA), deck.index(self.jokerB))
-        secondJoker = max(deck.index(self.jokerA), deck.index(self.jokerB))
-        deck = deck[secondJoker + 1:] + deck[firstJoker:secondJoker + 1] + deck[:firstJoker]
-        return deck
+    def tripleCut(self):
+        firstJoker = min(self.__deck.index(self.jokerA), self.__deck.index(self.jokerB))
+        secondJoker = max(self.__deck.index(self.jokerA), self.__deck.index(self.jokerB))
+        self.__deck = self.__deck[secondJoker + 1:] + self.__deck[firstJoker:secondJoker + 1] + self.__deck[:firstJoker]
 
     # count cut -  Look at the bottom card. If it is a joker, do nothing for this step.
     # Else - take the number corresponding to that card and do a count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
 
-    def countCut(self, deck):
-        bottomVal = self.cardVal(deck[-1])
+    def countCut(self):
+        bottomVal = self.cardVal(self.__deck[-1])
         if bottomVal in [self.jokerA, self.jokerB]:
-            return deck
-        deck = deck[bottomVal:-1] + deck[:bottomVal] + [deck[-1]]
-        return deck
+            return
+        self.__deck = self.__deck[bottomVal:-1] + self.__deck[:bottomVal] + [self.__deck[-1]]
 
     # # Convert the letter of the keyword to a number, where ‘A’ = 1, ‘B’ = 2, ‘C’ = 3, ..., ‘Z’ = 26
     # # do another count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
@@ -99,28 +97,23 @@ class solitaire:
         return card
 
     # generate keystream
-    def generateKeystreamVal(self, deck):
+    def generateKeystreamVal(self):
         while True:
-            self.moveJokerA(deck)
-            self.moveJokerB(deck)
-            deck = self.tripleCut(deck)
-            deck = self.countCut(deck)
+            self.moveJokerA()
+            self.moveJokerB()
+            self.tripleCut()
+            self.countCut()
 
-            topVal = deck[0]
-            if topVal in [self.jokerA, self.jokerB]:
-                continue
+            topVal = self.__deck[0]
 
-            # Take stack of topVal cards off deck
-            stack = deck[1:topVal + 1]
-            remainingDeck = deck[topVal + 1:]
+            if topVal == 54:
+                topVal = 53
 
-            # New top card after stack 
-            newTopVal = remainingDeck[0]
-            # Put stack back on top of deck
-            deck = stack + remainingDeck
+            # New top card after stack
+            newTopVal = self.__deck[topVal]
 
             # if newTopVal = 53, repeat from step 1
-            if newTopVal == 53:
+            if newTopVal == 53 or newTopVal == 54:
                 continue
             elif newTopVal > 26:
                 newTopVal -= 26
@@ -129,23 +122,25 @@ class solitaire:
 
     # generate required length of keystream
     def generateKeystream(self, deck, length):
+        self.__deck = deck.copy()
         keystream = []
         for _ in range(length):
-            keystream.append(self.generateKeystreamVal(deck))
+            keystream.append(self.generateKeystreamVal())
         return keystream
 
     def decipher(self, cipherText, deck):
         keystream = self.generateKeystream(deck.copy(), len(cipherText))
         print(f'Keystream: {keystream}')
-        print(deck)
 
         plainText = []
         for i, letter in enumerate(cipherText):
             cipherVal = self.letterToNum(letter)
-            keyVal = keystream[i] % 26
-            plainVal = (cipherVal - keyVal - 1) % 26
+            keyVal = keystream[i]
+
+            plainVal = (cipherVal - keyVal)
             if plainVal == 0:
                 plainVal = 26
+
             plainText.append(self.numToLetter(plainVal))
 
         return ''.join(plainText)
