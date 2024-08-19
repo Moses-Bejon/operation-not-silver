@@ -13,7 +13,7 @@ def simulatedAnnealing(initialKey, generateCandidateKey, evaluateFitness, decryp
         candidateKey = generateCandidateKey(currentKey)
 
         # Decrypt with candidate key and evaluate decryption
-        decryptedText = decrypt(candidateKey.copy())
+        decryptedText = decrypt(candidateKey)
         candidateScore = evaluateFitness(decryptedText)
 
         # accept or reject new score
