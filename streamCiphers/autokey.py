@@ -108,7 +108,7 @@ class autokey:
         return candidateKey
 
     def decrypt(self, key):
-        return self.decipher(self.cipher, key)
+        return self.decipher(self.cipher, key.copy())
 
     def annealingKey(self, keyLength):
         initialKey = [random.randint(0, 25) for _ in range(keyLength)]
