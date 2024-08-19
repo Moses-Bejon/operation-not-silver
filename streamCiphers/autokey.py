@@ -1,8 +1,8 @@
 import random
 import json
-import math
 from evaluate import getIOC, getEntropy, getLetterFrequencies, normaliseLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
 from formatCipher import stringToInt, intToString
+from simulatedAnnealing import simulatedAnnealing
 
 class autokey:
     def __init__(self, cipher):
@@ -100,52 +100,35 @@ class autokey:
 
         return bestKeyLength
 
-    # optimise decryption process
-    def simulatedAnnealing(self, keyLength, initialTemp=100.0, coolingRate=0.95, maxIter=1000):
-        currentKey = [random.randint(0, 25) for _ in range(keyLength)]
-        bestKey = currentKey[:]
-        bestDecryption = None
-        bestScore = float('-inf')
+    # generate candidate key for annealing
+    def generateCandidateKey(self, currentKey):
+        candidateKey = currentKey[:]
+        pos = random.randint(0, len(currentKey) - 1)
+        candidateKey[pos] = random.randint(0, 25)
+        return candidateKey
 
-        temperature = initialTemp
+    def decrypt(self, key):
+        return self.decipher(self.cipher, key)
 
-        for iteration in range(maxIter):
-            candidateKey = currentKey[:]
-            pos = random.randint(0, keyLength - 1)
-            candidateKey[pos] = random.randint(0, 25)
-
-            # Decrypt with candidate key and evaluate decryption
-            decryptedText = self.decipher(self.cipher, candidateKey.copy())
-            candidateScore = self.evaluateDecryption(decryptedText)
-
-            # accept or reject new score
-            deltaScore = candidateScore - bestScore
-
-            if deltaScore > 0 or random.uniform(0, 1) < math.exp(deltaScore / temperature):
-                currentKey = candidateKey[:]
-                if candidateScore > bestScore:
-                    bestScore = candidateScore
-                    bestKey = candidateKey[:]
-                    bestDecryption = decryptedText
-
-            # reduce temp
-            temperature *= coolingRate
-
-            if iteration % 100 == 0:
-                print(f"Iteration: {iteration}, Best Score: {bestScore}, Best Key: {bestKey}")
-
+    def annealingKey(self, keyLength):
+        initialKey = [random.randint(0, 25) for _ in range(keyLength)]
+        bestKey, bestDecrypt = simulatedAnnealing(
+            initialKey=initialKey,
+            generateCandidateKey=self.generateCandidateKey,
+            evaluateFitness=self.evaluateDecryption,
+            decrypt=self.decrypt
+        )
         self.bestKey = bestKey
-        self.bestDecryption = bestDecryption
-        self.bestScore = bestScore
-
-        return bestKey, intToString(bestDecryption)
+        self.bestDecryption = bestDecrypt
+        self.bestScore = self.evaluateDecryption(bestDecrypt)
+        return bestKey, intToString(bestDecrypt)
 
 
 # cipherText = "IVIDVWYYSWAFNTVFDLJQVDAELSGSMSXEEMPWGRGWPQTPOFEACINUPHQYEPXMZSVVHPYXBROOHKVWOXNYIXWWLASKMEYEWXLCUPBKAWSHTALFWBMJGJXMDBZWYWDEMZMPAJDVTBQJTHNXQJTHVORWGUIYGKLHSPXKPIMUFPNWNLPBYWUXXKXQPRGLGVWATPKGSOKEEROOXAAQQNRWSUZTRWSENRMVPASQHBDJSAFRJYHIEJCHDEEXTBOXFJQRKTGJQQHLWSAPPTWIWV"
 # cipherText = stringToInt(cipherText)
 # autokeyCipher = autokey(cipherText)
-
+# 
 # keyLength = autokeyCipher.bruteForceAutokey(maxKeyLength=20)
-# bestKey, decryptedText = autokeyCipher.simulatedAnnealing(keyLength)
+# bestKey, decryptedText = autokeyCipher.annealingKey(keyLength)
 # print("Best Key:", bestKey)
 # print("Decrypted Text:", decryptedText)
