@@ -147,6 +147,35 @@ def calculateQuadgramFrequencies():
     with open("quadgram proportions unlogged.json","w") as file:
         json.dump(hashMap,file)
 
+def calculateTrigramFrequencies():
+    trigramFrequencies = {}
+    window = [ord("t") - 97, ord("h") - 97, ord("e") - 97]
+    total = 0
+
+    for line in lines:
+        line = unidecode(line).lower()
+
+        for letter in line:
+            if letter.isalpha():
+
+                total += 1
+
+                try:
+                    trigramFrequencies[tuple(window)] += 1
+                except:
+                    trigramFrequencies[tuple(window)] = 1
+
+                window.pop(0)
+                window.append(ord(letter) - 97)
+
+    hashMap = [-25] * (26 ** 3)
+
+    for trigram, frequency in trigramFrequencies.items():
+        hashMap[trigram[0] * 26 ** 2 + trigram[1] * 26 + trigram[2]] = log2(frequency / total)
+
+    with open("trigram proportions.json", "w") as file:
+        json.dump(hashMap, file)
+
 def calculateBigramFrequencies():
     bigramFrequencies = {}
     window = [ord("t")-97,ord("h")-97]
