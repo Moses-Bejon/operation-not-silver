@@ -67,7 +67,7 @@ _Under streamCiphers_
 - **Unit 92: Autokey cipher** ✅ - Beaufort variant not covered 
 - **Unit 95: Running-key cipher** ✅
 - Unit 96: Progressive Vigenère cipher
-- **Unit 97: Solitaire cipher**
+- **Unit 97: Solitaire cipher** ✅ - Only works on partially known keys, very slow
 
 _Under codes_
 - Unit 99: Codes
