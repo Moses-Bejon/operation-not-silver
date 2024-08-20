@@ -1,32 +1,147 @@
-import string
+import random
 
 class solitaire:
-    jokerA = 53
-    jokerB = 54
-
-    def __init__(self,deckConfig):
-        self.deckConfig = deckConfig
-        self.keyedDeck = [self.cardToVal(card) for card in deckConfig]
-
-    def letterToNum(self, letter):
-        return string.ascii_uppercase.index(letter) + 1
-
-    def numToLetter(self, number):
-        return string.ascii_uppercase[(number - 1) % 26]
-
-    # convert deck of cards to numbers
-    def cardToVal(self, card):
-        suits = {
-            '♣': (1, 13),
-            '♦': (14, 26),
-            '♥': (27, 39),
-            '♠': (40, 52)
+    def __init__(self,cipher,initialDeck):
+        self.__suits = {
+            '♣': 0,
+            '♦': 13,
+            '♥': 26,
+            '♠': 39
         }
 
+        self.__cipher = cipher
+
+        cardsMissing = set(range(1, 53))
+        cardsMissing.add("A")
+        cardsMissing.add("B")
+
+        self.__unknownIndices = []
+        self.__knownDeck = []
+        for i,card in enumerate(initialDeck):
+            card = self.cardToVal(card,i)
+            self.__knownDeck.append(card)
+
+            if card == "?":
+                self.__unknownIndices.append(i)
+            else:
+                cardsMissing.discard(card)
+
+        self.__initialDeck = self.__knownDeck.copy()
+
+        cardsMissing = list(cardsMissing)
+
+        place = 0
+        for i,card in enumerate(self.__knownDeck):
+            if card == "?":
+                self.__initialDeck[i] = cardsMissing[place]
+
+                if cardsMissing[place] == "A":
+                    self.__initialJokerA = i
+                elif cardsMissing[place] == "B":
+                    self.__initialJokerB = i
+
+                place += 1
+
+    def setCipher(self,cipher):
+        self.__cipher = cipher
+
+    def shuffle(self):
+
+        """
+        # TEST
+        if self.__initialJokerA != self.__initialDeck.index("A"):
+            print("TEST FAILED, joker A")
+            exit(1)
+        if self.__initialJokerB != self.__initialDeck.index("B"):
+            print("TEST FAILED, joker B")
+            exit(1)
+        """
+
+        if random.random() > 0.5:
+            self.__cards = random.sample(self.__unknownIndices,k=2)
+            self.__initialDeck[self.__cards[0]],self.__initialDeck[self.__cards[1]] = self.__initialDeck[self.__cards[1]],self.__initialDeck[self.__cards[0]]
+
+            if self.__cards[0] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[0]
+
+            if self.__cards[0] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[0]
+
+        else:
+            self.__cards = random.sample(self.__unknownIndices, k=3)
+            self.__initialDeck[self.__cards[0]], self.__initialDeck[self.__cards[1]] = self.__initialDeck[self.__cards[1]], self.__initialDeck[self.__cards[0]]
+            self.__initialDeck[self.__cards[0]], self.__initialDeck[self.__cards[2]] = self.__initialDeck[self.__cards[2]], self.__initialDeck[self.__cards[0]]
+
+            if self.__cards[0] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[2]
+            elif self.__cards[2] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[0]
+
+            if self.__cards[0] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[2]
+            elif self.__cards[2] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[0]
+
+    def undoShuffle(self):
+
+        """
+        # TEST
+        if self.__initialJokerA != self.__initialDeck.index("A"):
+            print("TEST FAILED, joker A")
+            exit(1)
+        if self.__initialJokerB != self.__initialDeck.index("B"):
+            print("TEST FAILED, joker B")
+            exit(1)
+        """
+
+        if len(self.__cards) == 2:
+            self.__initialDeck[self.__cards[0]],self.__initialDeck[self.__cards[1]] = self.__initialDeck[self.__cards[1]],self.__initialDeck[self.__cards[0]]
+
+            if self.__cards[0] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[0]
+
+            if self.__cards[0] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[1]
+            elif self.__cards[1] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[0]
+        else:
+            self.__initialDeck[self.__cards[0]], self.__initialDeck[self.__cards[2]] = self.__initialDeck[self.__cards[2]], self.__initialDeck[self.__cards[0]]
+            self.__initialDeck[self.__cards[0]], self.__initialDeck[self.__cards[1]] = self.__initialDeck[self.__cards[1]], self.__initialDeck[self.__cards[0]]
+
+            if self.__cards[1] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[0]
+            elif self.__cards[2] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[1]
+            elif self.__cards[0] == self.__initialJokerA:
+                self.__initialJokerA = self.__cards[2]
+
+            if self.__cards[1] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[0]
+            elif self.__cards[2] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[1]
+            elif self.__cards[0] == self.__initialJokerB:
+                self.__initialJokerB = self.__cards[2]
+
+    # convert deck of cards to numbers
+    def cardToVal(self, card,index):
         if card == 'joker A':
-            return self.jokerA
+            self.__initialJokerA = index
+            return "A"
         if card == 'joker B':
-            return self.jokerB
+            self.__initialJokerB = index
+            return "B"
+        if card == '?':
+            return "?"
 
         suit = card[-1]
         rank = card[:-1]
@@ -42,123 +157,179 @@ class solitaire:
         else:
             rank = int(rank)
 
-        val, _ = suits[suit]
-        return val + rank-1
+        val = self.__suits[suit]
+        return val + rank
 
     def moveJokerA(self):
         # If jokerA on bottom, put it just after the top card, else swap joker A with card below it
-        if self.__deck[-1] == self.jokerA:
+        if self.__jokerA == 53:
             self.__deck.insert(1, self.__deck.pop())
+            self.__jokerA = 1
+
+            if self.__jokerB != 0:
+                self.__jokerB += 1
+
         else:
-            index = self.__deck.index(self.jokerA)
-            self.__deck[index], self.__deck[index+1] = self.__deck[index+1], self.__deck[index]
+            self.__deck[self.__jokerA], self.__deck[self.__jokerA+1] = self.__deck[self.__jokerA+1], self.__deck[self.__jokerA]
+            self.__jokerA += 1
+
+            if self.__jokerA == self.__jokerB:
+                self.__jokerB -= 1
 
     def moveJokerB(self):
         # If joker B is on the bottom of the deck, put it just after the second card.
         # If joker B is the second to-last card, put it just after the top card.
         # If neither of these is the case, move joker B down by two cards.
-        if self.__deck[-1] == self.jokerB:
-            if len(self.__deck) > 2:
-                self.__deck.insert(2, self.__deck.pop())
-            else:
-                self.__deck.insert(1, self.__deck.pop())
-        elif self.__deck[-2] == self.jokerB:
+        if self.__jokerB == 53:
+            self.__deck.insert(2, self.__deck.pop())
+            self.__jokerB = 2
+
+            if self.__jokerA >= 2:
+                self.__jokerA += 1
+
+        elif self.__deck[-2] == "B":
             self.__deck.insert(1, self.__deck.pop(-2))
+            self.__jokerB = 1
+
+            if self.__jokerA != 0:
+                self.__jokerA += 1
+
         else:
-            index = self.__deck.index(self.jokerB)
-            self.__deck.insert((index + 2) % len(self.__deck), self.__deck.pop(index))
+            self.__deck[self.__jokerB], self.__deck[self.__jokerB + 1] = self.__deck[self.__jokerB + 1], self.__deck[self.__jokerB]
+            self.__jokerB += 1
+            if self.__jokerA == self.__jokerB:
+                self.__jokerA -= 1
+
+            self.__deck[self.__jokerB], self.__deck[self.__jokerB + 1] = self.__deck[self.__jokerB + 1], self.__deck[self.__jokerB]
+            self.__jokerB += 1
+            if self.__jokerA == self.__jokerB:
+                self.__jokerA -= 1
 
     # triple cut - swap stack of cards above 1st joker with stack of cards below 2nd joker
     # 1st joker = joker close to the top
     def tripleCut(self):
-        firstJoker = min(self.__deck.index(self.jokerA), self.__deck.index(self.jokerB))
-        secondJoker = max(self.__deck.index(self.jokerA), self.__deck.index(self.jokerB))
-        self.__deck = self.__deck[secondJoker + 1:] + self.__deck[firstJoker:secondJoker + 1] + self.__deck[:firstJoker]
+        if self.__jokerA > self.__jokerB:
+            self.__deck = self.__deck[self.__jokerA + 1:] + self.__deck[self.__jokerB:self.__jokerA + 1] + self.__deck[:self.__jokerB]
+        else:
+            self.__deck = self.__deck[self.__jokerB + 1:] + self.__deck[self.__jokerA:self.__jokerB + 1] + self.__deck[:self.__jokerA]
+
+        self.__jokerA,self.__jokerB = 53 - self.__jokerB,53 - self.__jokerA
+
 
     # count cut -  Look at the bottom card. If it is a joker, do nothing for this step.
     # Else - take the number corresponding to that card and do a count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
 
     def countCut(self):
-        bottomVal = self.cardVal(self.__deck[-1])
-        if bottomVal in [self.jokerA, self.jokerB]:
+        if self.__jokerA == 53 or self.__jokerB == 53:
             return
+
+        bottomVal = self.__deck[-1]
         self.__deck = self.__deck[bottomVal:-1] + self.__deck[:bottomVal] + [self.__deck[-1]]
 
-    # # Convert the letter of the keyword to a number, where ‘A’ = 1, ‘B’ = 2, ‘C’ = 3, ..., ‘Z’ = 26
-    # # do another count cut by taking a stack of that many card off the top of the deck and putting that stack just above the bottom card.
-    # def addCountCut(self, deck, letter):
-    #     countVal = self.letterToNum(letter)
-    #     deck = deck[countVal - 1:] + deck[:countVal - 1] + [deck[-1]]
-    #     return deck
+        if self.__jokerA < bottomVal:
+            self.__jokerA += 53 - bottomVal
+        else:
+            self.__jokerA -= bottomVal
+
+        if self.__jokerB < bottomVal:
+            self.__jokerB += 53 - bottomVal
+        else:
+            self.__jokerB -= bottomVal
 
     def cardVal(self, card):
-        if card == self.jokerA or card == self.jokerB:
+        if card == "A" or card == "B":
             return 53
         return card
 
     # generate keystream
     def generateKeystreamVal(self):
         while True:
+
+            """
+            # TEST
+            if self.__jokerA != self.__deck.index("A"):
+                print("TEST FAILED BEFORE MOVE, joker A")
+                exit(1)
+            if self.__jokerB != self.__deck.index("B"):
+                print("TEST FAILED BEFORE MOVE, joker B")
+                exit(1)
+            """
+
             self.moveJokerA()
+
+            """
+            # TEST
+            if self.__jokerA != self.__deck.index("A"):
+                print("TEST FAILED AFTER A MOVE, joker A")
+                exit(1)
+            if self.__jokerB != self.__deck.index("B"):
+                print("TEST FAILED AFTER A MOVE, joker B")
+                exit(1)
+            """
+
             self.moveJokerB()
+
+            """
+            # TEST
+            if self.__jokerA != self.__deck.index("A"):
+                print("TEST FAILED AFTER B MOVE, joker A")
+                exit(1)
+            if self.__jokerB != self.__deck.index("B"):
+                print("TEST FAILED AFTER B MOVE, joker B")
+                exit(1)
+            """
+
             self.tripleCut()
+
+            """
+            # TEST
+            if self.__jokerA != self.__deck.index("A"):
+                print("TEST FAILED AFTER TRIPLE CUT, joker A")
+                exit(1)
+            if self.__jokerB != self.__deck.index("B"):
+                print("TEST FAILED AFTER TRIPLE CUT, joker B")
+                exit(1)
+            """
+
             self.countCut()
+
+            """
+            # TEST
+            if self.__jokerA != self.__deck.index("A"):
+                print("TEST FAILED AFTER COUNT CUT, joker A")
+                exit(1)
+            if self.__jokerB != self.__deck.index("B"):
+                print("TEST FAILED AFTER COUNT CUT, joker B")
+                exit(1)
+            """
 
             topVal = self.__deck[0]
 
-            if topVal == 54:
+            if topVal == "A" or topVal == "B":
                 topVal = 53
 
             # New top card after stack
             newTopVal = self.__deck[topVal]
 
             # if newTopVal = 53, repeat from step 1
-            if newTopVal == 53 or newTopVal == 54:
+            if newTopVal == "A" or newTopVal == "B":
                 continue
-            elif newTopVal > 26:
-                newTopVal -= 26
 
             return newTopVal
 
-    # generate required length of keystream
-    def generateKeystream(self, deck, length):
-        self.__deck = deck.copy()
-        keystream = []
-        for _ in range(length):
-            keystream.append(self.generateKeystreamVal())
-        return keystream
-
-    def decipher(self, cipherText, deck):
-        keystream = self.generateKeystream(deck.copy(), len(cipherText))
-        print(f'Keystream: {keystream}')
+    def decipher(self):
+        self.__deck = self.__initialDeck.copy()
+        self.__jokerA = self.__initialJokerA
+        self.__jokerB = self.__initialJokerB
 
         plainText = []
-        for i, letter in enumerate(cipherText):
-            cipherVal = self.letterToNum(letter)
-            keyVal = keystream[i]
+        for letter in self.__cipher:
+            keyVal = self.generateKeystreamVal()
 
-            plainVal = (cipherVal - keyVal)
+            plainVal = (letter - keyVal)
             if plainVal == 0:
                 plainVal = 26
 
-            plainText.append(self.numToLetter(plainVal))
+            plainText.append(plainVal%26)
 
-        return ''.join(plainText)
-
-
-deckConfig = [
-    '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
-    '9♣', 'joker A', '7♣', '5♣', 'J♣', 'Q♣', 'J♥', 'Q♥', 'joker B',
-    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥',
-    '10♣', 'K♥', 'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠',
-    '9♠', '10♠', 'J♠', 'Q♠', '3♣', '4♣', 'A♣', '8♣', '2♣', 'K♠',
-    'K♣', 'A♦', '2♦', '3♦', '4♦', '6♣'
-]
-
-solitaire = solitaire(deckConfig)
-cipherText =("SCYWLWXCACDWWIFZSXIMHVMBRIWHCLNLMZIHHWWCHVOZNJCKPPALVNMGFNJRLCQFHDKNHZHKRAGIFXGKQQSLNEDGKOTOFRFNZAJOWWVZAPGGMLURKZGQDMHEHKYEBLRUPMRPKFHFFMCIDKGYLOFLQQLSOMYAEGCPDYRWWJLTXRKQLOLXGCHCSCQMDUKZWMLMKNTHMJQNVORTTIDRHQZBEIJCJNTMRTHYNVGAID")
-
-print(solitaire.decipher(cipherText, solitaire.keyedDeck))
-print(f'Solitaire key deck: {solitaire.keyedDeck}')
-
-# Decrypt: ANDTHENABRUPTLYANDUNBIDDENTHERECAMEINTOMYMINDASTORYOFTHEOLDWESTTHESTORYOFHOWINTHEPIONEERDAYSAGAMBLERSITTINGDOWNTOPLAYSOLITAIRELAIDHISGUNONTHETABLEBESIDEHIMANDIFHECAUGHTHIMSELFCHEATINGADMINISTEREDJUSTICEFIRSTHANDBYSHOOTINGHIMSELFXX
+        return plainText
