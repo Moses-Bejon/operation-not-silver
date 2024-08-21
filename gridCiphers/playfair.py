@@ -1,27 +1,121 @@
 import random
+from unidecode import unidecode
+from evaluate import getIOC, getLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
+from simulatedAnnealing import simulatedAnnealing
 
-class playfair(): # also name the file the same way please
+# need to swap j for i
+def stringToInt(cipher):
+    formattedCipher = []
+    for letter in cipher:
+        if letter.lower() == 'j':
+            letter = 'i'
+        if letter.isalpha():
+            formattedCipher.append(ord(unidecode(letter).lower()) - 97)
+    return [c if c < 9 else c - 1 for c in formattedCipher]
 
-    def __init__(self,cipher):
-        self.__cipher = cipher # the cipherText
-        self.__key = "any valid key or group of keys, you can split this up into multiple variables if you need to"
 
-    def shuffle(self):
-        # code to randomly shuffle the key (the shuffle should be the smallest shuffle possible such that the plain text
-        # deciphered is as similar to the previous as possible)
-        pass
+def intToString(cipher):
+    formattedCipher = ""
+    for letter in cipher:
+        if letter >= 9:
+            letter += 1  # adjust to skip 'j'
+        formattedCipher += chr(letter + 97)
+    return formattedCipher
 
-    # this is an optional function feel free to remove it
-    # if the hill climb thinks it's reached a local maximum, it will call this function, to attempt to break out
-    # if you have removed it the cipher will simply be shuffled ten times instead
-    def shake(self):
-        pass
+class playfair:
+    def __init__(self, cipherText):
+        self.cipherText = cipherText
+        self.key = self.generateKey()
 
-    def undoShuffle(self):
-        # only needs to undo one previous shuffle. This function will not be called twice in a row, only ever with a
-        # shuffle() in between
-        pass
+    def generateKey(self):
+        # exclude (ideally) letter j from alphabet - this is for 5x5 grid
+        alphabet = [i for i in range(25)]
+        random.shuffle(alphabet)
+        return alphabet
 
     def decipher(self):
-        # code to get plainText from self.__cipher using self.__key (or whatever keys you're using)
+        plainText = []
+        for i in range(0, len(self.cipherText),2):
+            a = self.cipherText[i]
+            b = self.cipherText[i+1]
+            plainText.extend(self.decodePair(a,b))
         return plainText
+
+    def decodePair(self, a, b):
+        rowA, colA = divmod(self.key.index(a), 5)
+        rowB, colB = divmod(self.key.index(b), 5)
+
+        if rowA == rowB:
+            return [(rowA * 5 + (colA - 1) % 5), (rowB * 5 + (colB - 1) % 5)]
+        elif colA == colB:
+            return [((rowA-1)%5 * 5 + colA), ((rowB-1)%5 * 5 + colB)]
+        else:
+            return [(rowA * 5 + colB), (rowB * 5 + colA)]
+
+
+    def shuffle(self):
+        choice = random.randint(1, 6)
+        if choice == 1:
+            self.swapElements()
+        elif choice == 2:
+            self.swapRows()
+        elif choice == 3:
+            self.swapColumns()
+        elif choice == 4:
+            self.flipDiagonal()
+        elif choice == 5:
+            # flip the square around the diagonal that runs from upper left to lower right
+            self.flipVertical()
+        elif choice == 6:
+            self.flipHorizontal()
+
+    def swapElements(self):
+        a,b = random.sample(range(25),2)
+        self.key[a], self.key[b] = self.key[b], self.key[a]
+
+    def swapRows(self):
+            rowA, rowB = random.sample(range(25), 2)
+            self.key[rowA * 5:rowA * 5 + 5], self.key[rowB * 5:rowB * 5 + 5] = self.key[rowB * 5:rowB * 5 + 5], self.key[rowA * 5:rowA * 5 + 5]
+
+    def swapColumns(self):
+        colA, colB = random.sample(range(5), 2)
+        for i in range(5):
+            self.key[i * 5 + colA], self.key[i * 5 + colB] = self.key[i * 5 + colB], self.key[i * 5 + colA]
+
+    def flipDiagonal(self):
+        self.key = [self.key[i%5 * 5+i //5] for i in range(25)]
+
+    def flipVertical(self):
+        for i in range(5):
+            self.key[i*5:(i+1) * 5] = self.key[i*5:(i+1) * 5][::-1]
+
+    def flipHorizontal(self):
+        self.key = self.key[::-1]
+
+def evaluate(plaintext):
+    bigramScore = evaluateBigramFrequencies(plaintext)
+    quadgramScore = evaluateQuadgramFrequencies(plaintext)
+    letterFreq, _ = getLetterFrequencies(plaintext)
+    iocScore = getIOC(letterFreq, len(plaintext))
+
+    totalScore = bigramScore + quadgramScore + 2 * iocScore
+    return totalScore
+
+
+cipherText = "UDSDAEEPVFHPKNNMPILPBMNGDOOGHPGDVFHIVQRSURBETIREAFHPAVKFREHRRMFANFPUDMRAAUPIAGPEXFTGRUODWRBNFNDOTGPWQGDMNLQVWEUWHGLDFSAUNOQPUALZSDZDGUFABEZDRBDFDVVQRSGMBEIZTDFNOPPLPUUVRBAUGTVEHRARFKDRBEODUDVEUCAWRBPRDSNEBXRSLTPWQGRAFAKGLPUWHGLZBFREIEREZLRETZWGYNLPDUFPECPZZDMUGUUTICGUIARAODOQGDUGIZGHUALZMUBVZDDMZDRBGUFAEFBRDMARDFOPBRPRNLOMSDSRXNOREBRADMGKANMHKIDZUMOAPLOAAFUNRZARSIGHUSMGZDRDEPUWBEIFREOPLSFNBWAUMPTLMGNLRZARSIPIAUXGZDPR"
+
+cipherText = stringToInt(cipherText)
+playfair = playfair(cipherText)
+
+key, decryption = simulatedAnnealing(
+    playfair.key,
+    playfair.shuffle,
+    lambda dec: evaluate(playfair.decipher()),
+    playfair.decipher
+)
+
+print(f'Best key: {key}')
+print(f'Best decrypt: {intToString(decryption)}')
+
+
+
