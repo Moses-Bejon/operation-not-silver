@@ -1,6 +1,6 @@
 from copy import deepcopy
 import random
-from nihilist import Nihilist
+# from nihilist import Nihilist
 # from playfair import intToString - unidecode wouldn't work on my laptop
 
 def intToString(cipher):
@@ -27,23 +27,22 @@ class Phillips(): # also name the file the same way please
         self.__cipher = cipher # the cipherText
         # we don't need valid nums
         self.__keyword = keyword
-        self.__keySquare = self.generateKeySquare(keyword)
+        self.__keySquare = self.generateKeySquare()
         self.__swappedLetters = (-1, -1)
 
     
-    def generateKeySquare(self, keyw):
+    def generateKeySquare(self):
         # if length > 18: # too big
         #     return None
         alphabet = list(range(25))
-        keyword = stringToInt(keyw)
+        keyword = stringToInt(self.__keyword)
         keyword += alphabet
         keySquare = []
         
         for char in keyword:
             if char not in keySquare:
                 keySquare.append(char) 
-        print(intToString(keySquare))
-        # print(keySquare)
+        # print(intToString(keySquare))
         
         # if length >0:
         #     random.shuffle(key[:length])
@@ -70,7 +69,7 @@ class Phillips(): # also name the file the same way please
             square[ending:nextEnding] = moving
             squares.append(square)
             prevSquare = square
-            print(row, intToString(prevSquare))
+            # print(row, intToString(prevSquare))
 
         return squares
         
@@ -99,7 +98,7 @@ class Phillips(): # also name the file the same way please
     def decipher(self):
         # decrypt ciphertext in blocks of 5
         plaintext = []
-        squares = self.generateSquares(self.__keySquare)
+        squares = self.generateSquares()
         
         for block in range(len(self.__cipher)//5+1):
             for l in range(block*5, block*5+5, 1):
@@ -121,7 +120,6 @@ BSGFRYKHGIBNIBUVXPAIYSIVUCZHWGKZBANRGFIFUMWEIYXUNOGWHR
 WUZYAUSIAUIHGFMQSIBAUYKYMV
 '''
     cipherText = stringToInt(cipherString)
-    print(cipherString.lower().replace(' ', '') == intToString(cipherText))
-    phillips = Phillips(cipherText)
+    phillips = Phillips(cipherText, keyword="RHYMES")
     print(phillips.decipher())
 
