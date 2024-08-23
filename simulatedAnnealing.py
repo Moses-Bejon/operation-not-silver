@@ -29,7 +29,7 @@ def simulatedAnnealing(initialKey, generateCandidateKey, evaluateFitness, decryp
         # reduce temp
         temp *= coolingRate
 
-        if iteration % 100 == 0:
+        if iteration % 1000 == 0:
             print(f"Iteration: {iteration}, Best Score: {bestScore}, Best Key: {bestKey}")
 
     return bestKey, bestDecryption
