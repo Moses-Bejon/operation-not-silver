@@ -1,6 +1,6 @@
 from copy import deepcopy
 import random
-# from nihilist import Nihilist
+from nihilist import Nihilist
 # from playfair import intToString - unidecode wouldn't work on my laptop
 
 def intToString(cipher):
