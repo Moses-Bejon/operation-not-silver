@@ -23,7 +23,7 @@ def stringToInt(cipher):
 
 class Phillips(): # also name the file the same way please
 
-    def __init__(self,cipher, keyword=None):
+    def __init__(self,cipher, keyword=""):
         self.__cipher = cipher # the cipherText
         # we don't need valid nums
         self.__keyword = keyword
