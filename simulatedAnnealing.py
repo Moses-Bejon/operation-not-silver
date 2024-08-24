@@ -1,7 +1,13 @@
 import random
 import math
-from formatCipher import intToString
 
+def intToString(cipher):
+    formattedCipher = ""
+    for letter in cipher:
+        if letter >= 9:
+            letter += 1  # adjust to skip 'j'
+        formattedCipher += chr(letter + 97)
+    return formattedCipher
 
 def simulatedAnnealing(initialKey, generateCandidateKey, evaluateFitness, decrypt, initialTemp=100.0, coolingRate=0.95,
                        maxIter=1000):
