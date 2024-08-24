@@ -49,33 +49,33 @@ class playfair:
 
         if rowA == rowB:
             # same row= shift columns left
-            new_a = key[rowA][(colA - 1) % 5]
-            new_b = key[rowB][(colB - 1) % 5]
+            newA = key[rowA][(colA - 1) % 5]
+            newB = key[rowB][(colB - 1) % 5]
         elif colA == colB:
             # same col= shift rows up
-            new_a = key[(rowA - 1) % 5][colA]
-            new_b = key[(rowB - 1) % 5][colB]
+            newA = key[(rowA - 1) % 5][colA]
+            newB = key[(rowB - 1) % 5][colB]
         else:
             # swap columns but keep rows
-            new_a = key[rowA][colB]
-            new_b = key[rowB][colA]
+            newA = key[rowA][colB]
+            newB = key[rowB][colA]
 
-        return [new_a, new_b]
+        return [newA, newB]
 
     def shuffle(self, key):
         key = [row[:] for row in key]
-        choice = random.randint(1, 6)
-        if choice == 1:
+        choice = random.randint(1, 100)
+        if choice <= 90:
             self.swapElements(key)
-        elif choice == 2:
+        elif choice <= 92:
             self.swapRows(key)
-        elif choice == 3:
+        elif choice <= 94:
             self.swapColumns(key)
-        elif choice == 4:
+        elif choice <= 96:
             self.flipDiagonal(key)
-        elif choice == 5:
+        elif choice <= 98:
             self.flipVertical(key)
-        elif choice == 6:
+        else:
             self.flipHorizontal(key)
         return key
         # Debug print
@@ -145,8 +145,9 @@ bestKey, bestDecryption = simulatedAnnealing(
     generateCandidateKey=playfairCipher.generateCandidateKey,
     evaluateFitness=lambda dec: playfairCipher.evaluateDecryption(dec),
     decrypt=lambda key: playfairCipher.decrypt(key),
-    maxIter=20000,
-    coolingRate=0.999
+    maxIter=10000000,
+    coolingRate=0.9999,
+    initialTemp=100.0
 )
 
 print(f'Best key: {bestKey}')
