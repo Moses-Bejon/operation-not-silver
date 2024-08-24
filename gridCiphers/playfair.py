@@ -1,7 +1,8 @@
 import random
 from unidecode import unidecode
-from linguisticData.evaluate import getIOC, getLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
+from evaluate import getIOC, getLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
 from simulatedAnnealing import simulatedAnnealing
+from formatCipher import intToString
 
 # need to swap j for i
 def stringToInt(cipher):
@@ -13,13 +14,13 @@ def stringToInt(cipher):
             formattedCipher.append(ord(unidecode(letter).lower()) - 97)
     return [c if c < 9 else c - 1 for c in formattedCipher]
 
-def intToString(cipher):
-    formattedCipher = ""
-    for letter in cipher:
-        if letter >= 9:
-            letter += 1  # adjust to skip 'j'
-        formattedCipher += chr(letter + 97)
-    return formattedCipher
+# def intToString(cipher):
+#     formattedCipher = ""
+#     for letter in cipher:
+#         if letter >= 9:
+#             letter += 1  # adjust to skip 'j'
+#         formattedCipher += chr(letter + 97)
+#     return formattedCipher
 
 class playfair:
     def __init__(self, cipherText):
@@ -37,12 +38,18 @@ class playfair:
         for i in range(0, len(self.__cipherText), 2):
             a = self.__cipherText[i]
             b = self.__cipherText[i + 1]
-            plainText.extend(self.decodePair(a, b, key))
+            decodedPair = self.decodePair(a, b, key)
+            plainText.extend(decodedPair)
+
         return plainText
 
     def decodePair(self, a, b, key):
-        posA = [(ix, iy) for ix, row in enumerate(key) for iy, i in enumerate(row) if i == a][0]
-        posB = [(ix, iy) for ix, row in enumerate(key) for iy, i in enumerate(row) if i == b][0]
+        # convert 9 to 8
+        convertedA, convertedB = [8 if x == 9 else x for x in [a, b]]
+
+        # find positions in the grid
+        posA = [(ix, iy) for ix, row in enumerate(key) for iy, i in enumerate(row) if i == convertedA][0]
+        posB = [(ix, iy) for ix, row in enumerate(key) for iy, i in enumerate(row) if i == convertedB][0]
 
         rowA, colA = posA
         rowB, colB = posB
@@ -60,7 +67,11 @@ class playfair:
             newA = key[rowA][colB]
             newB = key[rowB][colA]
 
-        return [newA, newB]
+        # convert back to pass into evaluator
+        return [
+            newA if newA != 8 else 9,
+            newB if newB != 8 else 9
+        ]
 
     def shuffle(self, key):
         key = [row[:] for row in key]
@@ -112,14 +123,17 @@ class playfair:
             for row in self.__key:
                 print(row)
 
-    def evaluateDecryption(self, plainText):
-        bigramScore = evaluateBigramFrequencies(plainText)
-        quadgramScore = evaluateQuadgramFrequencies(plainText)
-        letterFreq, _ = getLetterFrequencies(plainText)
-        iocScore = getIOC(letterFreq, len(plainText))
+    def convert(self, text):
+        # any number after 8 should be incremented by one by evaluator
+        # print(f'text: {intToString(text)}')
+        return [8 if c == 9 else c for c in text]
+        # return [c + 1 if c > 8 else c for c in text]
 
-        totalScore = bigramScore + quadgramScore + 2 * iocScore
-        return totalScore
+    def evaluateDecryption(self, plainText):
+        convertedText = self.convert(plainText)
+        # print(f'converted text: {intToString(convertedText)}')
+        quadgramScore = evaluateQuadgramFrequencies(convertedText)
+        return quadgramScore
 
     def generateCandidateKey(self, currentKey):
         candidateKey = self.shuffle(currentKey)
@@ -145,7 +159,7 @@ bestKey, bestDecryption = simulatedAnnealing(
     generateCandidateKey=playfairCipher.generateCandidateKey,
     evaluateFitness=lambda dec: playfairCipher.evaluateDecryption(dec),
     decrypt=lambda key: playfairCipher.decrypt(key),
-    maxIter=10000000,
+    maxIter=100000,
     coolingRate=0.9999,
     initialTemp=100.0
 )
