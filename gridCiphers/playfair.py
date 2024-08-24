@@ -1,6 +1,6 @@
 import random
 from unidecode import unidecode
-from evaluate import getIOC, getLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
+from linguisticData.evaluate import getIOC, getLetterFrequencies, evaluateBigramFrequencies, evaluateQuadgramFrequencies
 from simulatedAnnealing import simulatedAnnealing
 
 # need to swap j for i
@@ -101,21 +101,21 @@ def evaluate(plaintext):
     totalScore = bigramScore + quadgramScore + 2 * iocScore
     return totalScore
 
+if __name__ == "__main__":
+    cipherText = "UDSDAEEPVFHPKNNMPILPBMNGDOOGHPGDVFHIVQRSURBETIREAFHPAVKFREHRRMFANFPUDMRAAUPIAGPEXFTGRUODWRBNFNDOTGPWQGDMNLQVWEUWHGLDFSAUNOQPUALZSDZDGUFABEZDRBDFDVVQRSGMBEIZTDFNOPPLPUUVRBAUGTVEHRARFKDRBEODUDVEUCAWRBPRDSNEBXRSLTPWQGRAFAKGLPUWHGLZBFREIEREZLRETZWGYNLPDUFPECPZZDMUGUUTICGUIARAODOQGDUGIZGHUALZMUBVZDDMZDRBGUFAEFBRDMARDFOPBRPRNLOMSDSRXNOREBRADMGKANMHKIDZUMOAPLOAAFUNRZARSIGHUSMGZDRDEPUWBEIFREOPLSFNBWAUMPTLMGNLRZARSIPIAUXGZDPR"
 
-cipherText = "UDSDAEEPVFHPKNNMPILPBMNGDOOGHPGDVFHIVQRSURBETIREAFHPAVKFREHRRMFANFPUDMRAAUPIAGPEXFTGRUODWRBNFNDOTGPWQGDMNLQVWEUWHGLDFSAUNOQPUALZSDZDGUFABEZDRBDFDVVQRSGMBEIZTDFNOPPLPUUVRBAUGTVEHRARFKDRBEODUDVEUCAWRBPRDSNEBXRSLTPWQGRAFAKGLPUWHGLZBFREIEREZLRETZWGYNLPDUFPECPZZDMUGUUTICGUIARAODOQGDUGIZGHUALZMUBVZDDMZDRBGUFAEFBRDMARDFOPBRPRNLOMSDSRXNOREBRADMGKANMHKIDZUMOAPLOAAFUNRZARSIGHUSMGZDRDEPUWBEIFREOPLSFNBWAUMPTLMGNLRZARSIPIAUXGZDPR"
+    cipherText = stringToInt(cipherText)
+    playfair = playfair(cipherText)
 
-cipherText = stringToInt(cipherText)
-playfair = playfair(cipherText)
+    key, decryption = simulatedAnnealing(
+        playfair.key,
+        playfair.shuffle,
+        lambda dec: evaluate(playfair.decipher()),
+        playfair.decipher
+    )
 
-key, decryption = simulatedAnnealing(
-    playfair.key,
-    playfair.shuffle,
-    lambda dec: evaluate(playfair.decipher()),
-    playfair.decipher
-)
-
-print(f'Best key: {key}')
-print(f'Best decrypt: {intToString(decryption)}')
+    print(f'Best key: {key}')
+    print(f'Best decrypt: {intToString(decryption)}')
 
 
 

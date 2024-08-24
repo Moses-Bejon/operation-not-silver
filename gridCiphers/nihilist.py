@@ -2,9 +2,8 @@ from random import sample
 from time import time
 from copy import deepcopy
 from threading import Thread
-
-import evaluater.evaluate
-
+# from hillPackage import evaluater
+from linguisticData.evaluate import evaluateQuadgramFrequencies
 
 class Nihilist():
     def __init__(self, cipher):
@@ -143,7 +142,7 @@ class Nihilist():
             plain_text = self.decipher(keySquare, key)
 
             if plain_text:
-                score = evaluater.evaluate.evaluateQuadgramFrequencies(plain_text)
+                score = evaluateQuadgramFrequencies(plain_text)
 
                 if score > maxScore:
                     maxScore = score
@@ -169,7 +168,7 @@ class Nihilist():
                         idle = 0
                         keySquare = self.shake(keySquare)
 
-                        curr_maxScore = evaluater.evaluate.evaluateQuadgramFrequencies(plain_text)
+                        curr_maxScore = evaluateQuadgramFrequencies(plain_text)
 
         end = time()
 
