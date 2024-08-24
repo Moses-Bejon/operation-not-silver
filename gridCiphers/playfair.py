@@ -2,6 +2,7 @@ from copy import deepcopy
 import random
 from unidecode import unidecode
 from evaluate import evaluateQuadgramFrequencies
+from hillClimb import hillClimb
 
 # need to swap j for i
 def stringToInt(cipher):
@@ -128,3 +129,14 @@ class playfair:
                 newPlainText.append(i)
         quadgramScore = evaluateQuadgramFrequencies(newPlainText)
         return quadgramScore
+
+
+# # unknown key
+# cipherText = "MDSOASOGTGKCDRBZEQVSKYMHFVIBDSKYMHCOROCEGODGABUICQMRORAOEAIHPEVFHPDMQCXCNDPUMRKBBPASZKGQPLABKENPNBVIQCASYQWBGZGUAEKYKBSHIQBUFSCPVLEQOEGUPBBNEQRFQYQCKSZGDCGUQSSIDCKGOGKRXZEQDKFVSAUCOCLNMRRCHWCMOBVFPDNBLVXCPEDRMHFVPDFVOVRCEAHRFSRLXCZMGQUQBXKGGSOBPUNPMDSHQBUIFNSGDUDUDCOWGSRFYTCYMRDSLTRDBXARZRQGKDQITVPLFVOIASDPQWQRDRXCPEGECRVFEDPLCDSDMCBAIQDQPLCOBNVBOZURBYXCNURQBXNQWSEKQUTCIQAELTFICZEQSHOGHWGENLTMTCPLEKBAUNAEOW"
+#
+# cipherText = stringToInt(cipherText)
+#
+# playfairCipher = playfair(cipherText)
+# hillClimb(playfairCipher, playfairCipher.evaluateDecryption)
+
+
