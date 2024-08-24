@@ -67,7 +67,7 @@ class playfair:
         plainText = ''
         for pair in digraphs:
             plainText += self.decodePair(pair)
-        return plainText
+        return plainText.replace('x', '')
 
 
 # key = "GROCEISABDFHKLMNPQTUVWXYZ"
