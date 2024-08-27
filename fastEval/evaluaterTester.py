@@ -2,9 +2,9 @@ import fastEval_quadgrams
 import evaluateQuadgrams
 import time
 
-no_of_repeats = 10000 
+no_of_repeats = 1000
 
-with open("normal.txt", "r") as f:
+with open("long.txt", "r") as f:
     plaintext = f.read().replace("\n", "").replace(" ", "").lower()
 
 plaintext_len = len(plaintext)
@@ -32,4 +32,4 @@ end_t = time.time()
 print("Fitness:", fitness)
 print("Time elapsed:", end_t - start_t)
 
-fastEval_quadgrams.terminate()
+fastEval_quadgrams.terminate(process)

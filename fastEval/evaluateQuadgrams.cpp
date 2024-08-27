@@ -5,7 +5,6 @@
 #include <sys/mman.h>
 #include <sstream>
 
-
 double fitness;
 int currentHash;
 int first;
@@ -34,7 +33,7 @@ int calculateHash(int* quadgram) {
 
 double evaluateQuadgramFrequencies(double* idealQuadgramFrequencies, int* plaintext, int plaintext_len) {
     currentHash = calculateHash(plaintext);
-
+    
     for (int i = 0; i < plaintext_len - 4; i++) {
         first = plaintext[i] * 17576;
         last = plaintext[i + 4];
@@ -46,7 +45,6 @@ double evaluateQuadgramFrequencies(double* idealQuadgramFrequencies, int* plaint
 
     return fitness;
 }
-
 
 int main(int argc, char* argv[]) {
     //get input from python module

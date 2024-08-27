@@ -11,6 +11,9 @@ def __create_shared_array(arr):
 
     return shm
 
+#Quick evaluateQuadgrams function: 
+#  Note - this function is only effective for longer plaintexts and/or many calls
+# (and only workd for plaintexts < 3664 characters due to some wierd piping issues)
 def evaluateQuadgrams(process: subprocess.Popen, plaintext):
     #send plaintext to the process using stdin
     process.stdin.write(f"{plaintext}\n")
@@ -24,10 +27,12 @@ def start_process(plaintext_len):
         stdin = subprocess.PIPE,
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE,
+        pipesize = 1000000, 
         text = True
     )
     
-def terminate():
+def terminate(process):
+    process.kill()
     iqf_shm.close()
     iqf_shm.unlink()
 
@@ -52,5 +57,5 @@ if __name__ == "__main__":
 
     print("fitness:", evaluateQuadgrams(process, plaintext, len(plaintext)))
 
-    terminate()
+    terminate(process)
 
