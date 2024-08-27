@@ -1,3 +1,5 @@
+# cd linguisticData
+# python -u "c:\Users\merch\OneDrive - Magdalen College School\A-level CS code\operation-not-silver\testPhillips.py" 
 from gridCiphers.phillips import Phillips, intToString, stringToInt
 from hillClimb import hillClimbWithMargin, hillClimb
 from linguisticData.evaluate import evaluateQuadgramFrequencies, evaluateBigramFrequencies, getLetterFrequencies,getIOC
@@ -14,7 +16,7 @@ WQVWQSZQLGDHCCGWPSOALCGFDFHMLTHQSWCLMAMZHZLYOCVZZICUDU
 VHGDLHAWGHQCWLBICGHNRMGPLYWQLQSELHWULGLPHIHGUANGKACGBQ
 LTGKWCRNTLRLWYVBLMLHGGKGRGAHIGDZHKGMSDBCOSZSHQNZKQVASZ
 AVFHQDOUGBIIWKZFH"""
-# cipherText = (cipherString)
+# cipherText = ("ijk")
 # phillips = Phillips(cipherText, keyword="RHYMES")
 # print(phillips.decipher())
 
@@ -32,17 +34,15 @@ hillClimb(Phillips(cipherString), evaluateQuadgramFrequencies)
 
 # p = Phillips(cipherString)
 # key, decryption = simulatedAnnealing(
-#     p.key,
+#     p.generateKey(),
 #     lambda genKey: p.shuffle(),
 #     lambda dec: evaluateQuadgramFrequencies(p.decipher()),
 #     p.decipher,
-#     initialTemp=300,
-#     maxIter=1000000
+#     initialTemp=100,
+#     maxIter=20000
 # )
 
 # print(f'Best key: {key}')
 # print(f'Best decrypt: {intToString(decryption)}')
-# print(len(cipherString))
-# print(evaluate(stringToInt(cipherString)))
 
 

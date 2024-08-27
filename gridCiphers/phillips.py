@@ -11,7 +11,7 @@ def intToString(cipher):
         #     letter += 1  # adjust to skip 'j'
         formattedCipher += chr(letter + 97)
     return formattedCipher
-print(intToString([8,8,10]))
+# print(intToString([8,8,10]))
 def stringToInt(cipher):
     formattedCipher = []
     for letter in cipher:
