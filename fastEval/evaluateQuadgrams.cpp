@@ -1,21 +1,35 @@
 #include <iostream>
-#include <cstring>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/mman.h>
 #include <sstream>
+#include <fstream>
+#include <string.h>
 
 double fitness;
 int currentHash;
 int first;
 int last;
+double idealQuadgramFrequencies[456976];
+std::string quadgram;
+double weight;
 
-void* open_shared_memory(const std::string& shm_name, size_t size) {
-    int fd = shm_open(('/' + shm_name).c_str(), O_RDONLY, 0222); 
-    void* addr = mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0);
-    close(fd);
+int calculateHash(int* quadgram) {
+    return quadgram[0] * 17576 + quadgram[1] * 676 + quadgram[2] * 26 + quadgram[3];
+}
 
-    return addr;
+int calculateHash(std::string quadgram) {
+    return (quadgram[0] - 97) * 17576 + (quadgram[1] - 97) * 676 + (quadgram[2] - 97) * 26 + (quadgram[3] - 97);
+}
+
+void load_idealFreqs() {
+    for (int i = 0; i < 456976; i++) {
+        idealQuadgramFrequencies[i] = -25.0;
+    }
+    //std::cout << "hi" << std::endl;
+
+    std::ifstream quadgramFile("./quadgram proportions.txt");
+    while (quadgramFile >> quadgram >> weight) {
+        idealQuadgramFrequencies[calculateHash(quadgram)] = weight;
+    }
+    quadgramFile.close();
 }
 
 int get_int_from_chars(const char* chars_val) {
@@ -25,10 +39,6 @@ int get_int_from_chars(const char* chars_val) {
     str_val >> int_val;
 
     return int_val;
-}
-
-int calculateHash(int* quadgram) {
-    return quadgram[0] * 17576 + quadgram[1] * 676 + quadgram[2] * 26 + quadgram[3];
 }
 
 double evaluateQuadgramFrequencies(double* idealQuadgramFrequencies, int* plaintext, int plaintext_len) {
@@ -47,18 +57,11 @@ double evaluateQuadgramFrequencies(double* idealQuadgramFrequencies, int* plaint
 }
 
 int main(int argc, char* argv[]) {
-    //get input from python module
-    const char* shm_name = argv[1];
-
-    char* plaintext_str;
-    int plaintext_len = get_int_from_chars(argv[2]); 
+    std::string plaintext_str;
+    int plaintext_len = get_int_from_chars(argv[1]); 
     int plaintext[plaintext_len];
 
-    //connect to shared memory to access ideal quadgram frequencies
-    void* shm_addr = open_shared_memory(shm_name, 3655808);
-
-    //type cast shared array pointer to double pointer
-    double* idealQuadgramFrequencies = static_cast<double*>(shm_addr);
+    load_idealFreqs();
 
     while (true) {
         fitness = 0;
@@ -69,11 +72,8 @@ int main(int argc, char* argv[]) {
         }
 
         //output to stdout file to be read by python
-        std::cout << evaluateQuadgramFrequencies(idealQuadgramFrequencies, plaintext, plaintext_len) << std::endl;   
+        std::cout << evaluateQuadgramFrequencies(idealQuadgramFrequencies, plaintext, plaintext_len) << '\n';   
     }
-
-    //clean up connection
-    munmap(shm_addr, 3655808);
 
     return 0;
 }

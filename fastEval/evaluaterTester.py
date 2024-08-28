@@ -4,7 +4,7 @@ import time
 
 no_of_repeats = 1000
 
-with open("long.txt", "r") as f:
+with open("normal.txt", "r") as f:
     plaintext = f.read().replace("\n", "").replace(" ", "").lower()
 
 plaintext_len = len(plaintext)
