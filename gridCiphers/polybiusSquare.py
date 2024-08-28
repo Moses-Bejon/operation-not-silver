@@ -1,3 +1,5 @@
+# to be run in hill climb with shake threshold of 5000
+
 import sys
 import os
 
