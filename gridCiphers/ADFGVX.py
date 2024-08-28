@@ -1,28 +1,19 @@
+# to be run in hill climb with shake threshold of 5000
+
 from monoAlphaNumericSubstitution import monoAlphaNumericSubstitution
 from columnarSubstitution import columnarSubstitution
 from evaluate import getLetterAndNumberFrequencies,getIOC,getLetterAndNumberEntropy,normaliseLetterFrequencies
 from ADFGX import ADFGX
+from polybiusSquare import formatPolybius
 
 class ADFGVX(ADFGX):
     def __init__(self,cipher,transpositionCipher=columnarSubstitution):
         super().__init__(cipher,transpositionCipher)
 
     def formatCipher(self,cipher):
-        formattedCipher = []
-        for character in cipher:
-            match character:
-                case "A" | "a":
-                    formattedCipher.append(0)
-                case "D" | "d":
-                    formattedCipher.append(1)
-                case "F" | "f":
-                    formattedCipher.append(2)
-                case "G" | "g":
-                    formattedCipher.append(3)
-                case "V" | "v":
-                    formattedCipher.append(4)
-                case "X" | "x":
-                    formattedCipher.append(5)
+        formattedCipher = formatPolybius(cipher,["a","d","f","g","v","x"])
+        if not formattedCipher:
+            formattedCipher = formatPolybius(cipher,["A","D","F","G","V","X"])
 
         return formattedCipher
 
