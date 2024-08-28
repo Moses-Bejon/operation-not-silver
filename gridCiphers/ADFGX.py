@@ -1,38 +1,30 @@
+# to be run in hill climb with shake threshold of 5000
+
 from monoAlphabeticSubstitution import monoAlphabeticSubstitution
 from columnarSubstitution import columnarSubstitution
 from evaluate import getLetterFrequencies,getIOC,getEntropy,normaliseLetterFrequencies
 from hillClimbKeyFinder import hillClimbKeyFinder
+from polybiusSquare import formatPolybius
 
-# note: this cipher can be slightly unreliable, it may take up to 5 attempts to get the correct answer with short ciphertexts and long keys
-
+# to be used in hill
 class ADFGX():
     def __init__(self,cipher,transpositionCipher=columnarSubstitution):
         formattedCipher = self.formatCipher(cipher)
-        self.__length = len(self.formatCipher(cipher))
+        self._length = len(self.formatCipher(cipher))
 
         self.__transpositionCipher = transpositionCipher(formattedCipher)
 
         # as this function takes a while, alerting the user I am at work and nothing is wrong
         print("I have started looking for potential keys for the transposition portion of the cipher")
-        keys = hillClimbKeyFinder(self.__transpositionCipher, self.keyFinderEvaluator, 100000, 20)
+        keys = hillClimbKeyFinder(self.__transpositionCipher, self.keyFinderEvaluator, 100000, 30)
         print("I have found the following keys with the following scores: ",keys)
 
         self.setKeyCandidates(keys[0][::-1])
 
     def formatCipher(self,cipher):
-        formattedCipher = []
-        for character in cipher:
-            match character:
-                case "A" | "a":
-                    formattedCipher.append(0)
-                case "D" | "d":
-                    formattedCipher.append(1)
-                case "F" | "f":
-                    formattedCipher.append(2)
-                case "G" | "g":
-                    formattedCipher.append(3)
-                case "X" | "x":
-                    formattedCipher.append(4)
+        formattedCipher = formatPolybius(cipher,["a","d","f","g","x"])
+        if not formattedCipher:
+            formattedCipher = formatPolybius(cipher,["A","D","F","G","X"])
 
         return formattedCipher
 
@@ -46,31 +38,31 @@ class ADFGX():
     def polybiusify(self,transposedText):
         polybiusified = []
 
-        for i in range(0, self.__length, 2):
+        for i in range(0, self._length, 2):
             polybiusified.append(transposedText[i] * 5 + transposedText[i + 1])
 
         return polybiusified
 
     def setKeyCandidates(self,keyCandidates):
-        self.__cipherCandidates = []
-        self.__numberOfCandidates = len(keyCandidates)
+        self._cipherCandidates = []
+        self._numberOfCandidates = len(keyCandidates)
 
         for key in keyCandidates:
             self.__transpositionCipher.injectKey(key)
-            self.__cipherCandidates.append(self.polybiusify(self.__transpositionCipher.decipher()))
+            self._cipherCandidates.append(self.polybiusify(self.__transpositionCipher.decipher()))
 
-        self.__place = -1
+        self._place = -1
         self.shake()
 
     def shake(self):
-        self.__place += 1
-        self.__cipher = monoAlphabeticSubstitution(self.__cipherCandidates[self.__place%self.__numberOfCandidates])
+        self._place += 1
+        self._cipher = monoAlphabeticSubstitution(self._cipherCandidates[self._place % self._numberOfCandidates])
 
     def shuffle(self):
-        self.__cipher.shuffle()
+        self._cipher.shuffle()
 
     def undoShuffle(self):
-        self.__cipher.undoShuffle()
+        self._cipher.undoShuffle()
 
     def decipher(self):
-        return self.__cipher.decipher()
+        return self._cipher.decipher()
