@@ -1,4 +1,4 @@
-# to be run in hill climb with shake threshold of 5000
+# to be run in hill climb with shake threshold of 5000 and shake amount of 10
 
 from monoAlphabeticSubstitution import monoAlphabeticSubstitution
 from columnarSubstitution import columnarSubstitution
