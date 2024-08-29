@@ -1,4 +1,5 @@
 # to be run in hill climb with shake threshold of 5000 and shake amount of 10
+# you need to use the alphanumeric evaluator to evaluate the produced plain texts
 
 from monoAlphaNumericSubstitution import monoAlphaNumericSubstitution
 from columnarSubstitution import columnarSubstitution
