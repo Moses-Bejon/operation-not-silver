@@ -5,7 +5,7 @@ from unidecode import unidecode
 from math import log2
 import json
 
-with open("trainingData") as books:
+with open("trainingData", encoding="utf-8") as books:
     lines = books.readlines()
 
 def calculateLetterFrequencies():
@@ -229,4 +229,8 @@ def calculateBigramFrequencies():
         json.dump(hashMap,file)
 
 
-calculateAlphanumericQuadgramFrequencies()
+# calculateAlphanumericQuadgramFrequencies()
+# calculateQuadgramFrequencies()
+calculateLetterFrequencies()
+calculateBigramFrequencies()
+calculateTrigramFrequencies()
