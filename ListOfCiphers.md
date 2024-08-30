@@ -1,8 +1,9 @@
 **Methods (under linguisticData)**
-- Hill-climb attack
+- Hill-climb attacks
 - Index of Coincidence analysis
 - Brute Force
 - n-grams analysis
+- Simulated Annealing (works for autokey) 
 - ...
 
 **List of ciphers: high priority are in bold**
@@ -44,11 +45,11 @@ _Under transpositionCiphers folder_
 
 _Under gridCiphers folder_
 - **Unit 69: Polybius cipher**✅
-- **Unit 70: Playfair cipher**
-- Unit 72: Vertical two-square cipher
-- Unit 73: Horizontal two-square cipher
+- **Unit 70: Playfair cipher**✅
+- Unit 72: Vertical two-square cipher✅
+- Unit 73: Horizontal two-square cipher✅
 - **Unit 75: Four-square cipher**✅ - some variants not covered
-- **Unit 76: Phillips cipher**
+- **Unit 76: Phillips cipher**✅
 - Unit 78: Phillips-RC cipher (optional)
 - Unit 79: Double Playfair cipher
 - **Unit 80: Nihilist substitution cipher** ✅ - Contains a bug, does not solve all exercises in the cipher book
