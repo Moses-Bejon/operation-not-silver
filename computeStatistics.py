@@ -1,23 +1,47 @@
 from formatCipher import stringToInt, intToString
-from linguisticData import evaluate
+from linguisticData.evaluate import *
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import Counter
 
-def IOC(ciphertext):    
-    letterFrequencies, total = evaluate.getLetterFrequencies(ciphertext)
-    ioc = evaluate.getIOC(letterFrequencies, total) # not normalised
+def IOC(ciphertext, block=1, times_entropy=False):
+    original = ciphertext[:]    
+    # divide into blocks of size block like madness p.31- IN PROGRESS
+    # --------------------------------------------------------
+    ciphertext = [
+        tuple(ciphertext[start:start+block])
+        for start in range(len(ciphertext)//block)
+    ]
+    print(ciphertext)
+    counter = Counter(ciphertext)
+    blockFrequencies = counter.values()
+    # --------------------------------------------------------
+    
+    letterFrequencies, total = getLetterFrequencies(original)
+    ioc = getIOC(letterFrequencies, counter.total()) # not normalised
+    print(ioc)
+    if times_entropy:
+        entropy = getEntropy(normaliseLetterFrequencies(letterFrequencies,total))
+        return entropy*ioc
     return ioc
 
+def IOCTimesEntropy(ciphertext):
+    return IOC(ciphertext, times_entropy=True)
 
+
+# 3x3 hill from madness - to test IOC for n-gram blocks
+# ciphertext = "RBC GUG KAG EQY GQM IXR DEV ISN ZAV OAD FDQ TST BCL"
+
+# a random vigenere with key length 4
 ciphertext = "WZEALYESUWCNSZEWLKARHLHTGGFJQURDSLISJSLUKSBJWACYHPTBKWRJHSCMOWTYHJOKWZEUOSISWWXYLKESFGDJGOIYKSDNIXEWHFTHDWSFUUIUKWRBKGSJLFCWHEESWASIHLEWPANJGTYYKWCTUJEXSGNILFGQHLTJ"
 # ciphertext = "zebra f"
 ciphertext = stringToInt(ciphertext)
 print(ciphertext)
-evalLetterFreq = evaluate.evaluateLetterFrequenciesUnsubstituted(ciphertext)
+evalLetterFreq = evaluateLetterFrequenciesUnsubstituted(ciphertext)
 print("Monogram fitness", evalLetterFreq)
 ioc = IOC(ciphertext)
 
-letterFrequencies, total = evaluate.getLetterFrequencies(ciphertext)
+letterFrequencies, total = getLetterFrequencies(ciphertext)
 gridPossible = 0 in letterFrequencies
 if gridPossible:
     lf = np.array(letterFrequencies)
@@ -25,24 +49,34 @@ if gridPossible:
     print(intToString(lettersWithZeroOccurences))
 
 # functionality to detect possible polyalphabetic periodic ciphers
-def evalOverPeriods(ciphertext, evaluator, maxPeriod=40):
+def evalOverPeriods(ciphertext, evaluator, maxPeriod=30):
     results = []
-    periods = list(str(p) for p in range(1, maxPeriod+1, 1))
+    periods = [] # string, for plt to not do decimals in x axis
     for period in range(1, maxPeriod+1, 1):
-        everyNthtext = ciphertext[::period] # array[start:stop:step]
-        # print(intToString(everyNthtext))
-        results.append(evaluator(everyNthtext))
+        aggregate = 0 # for period of 4, abcd efgh we'll check ioc 4 times for ae, bf, cg, dh
+        for starting in range(period):
+            everyNthtext = ciphertext[starting::period] # array[start:stop:step]
+            if len(everyNthtext) > 0: # how to prevent error with quadgram?? TODO: fix in py
+                print(intToString(everyNthtext))
+                aggregate += evaluator(everyNthtext) # add the score
+            else:
+                break
+        aggregate /= period # we calculated as many IOCs as the length of the period and averaged
+        results.append(aggregate) 
+        periods.append(str(period))
+
     
-    print(results)
+    # print(results)
     plt.xlabel("Period")
     plt.ylabel("Result")
-    plt.title(evaluator.__name__)
-    plt.bar(periods, results )
+    plt.title(evaluator.__name__ + " over periods")
+    plt.bar(periods, results)
     plt.show()
 
 
 
-evalOverPeriods(ciphertext, evaluate.evaluateLetterFrequenciesUnsubstituted)
+# evalOverPeriods(ciphertext, evaluateLetterFrequenciesUnsubstituted)
 evalOverPeriods(ciphertext, IOC)
-evalOverPeriods(ciphertext, evaluate.evaluateBigramFrequencies)
-evalOverPeriods(ciphertext, evaluate.evaluateQuadgramFrequencies)
+evalOverPeriods(ciphertext, IOCTimesEntropy)
+# evalOverPeriods(ciphertext, evaluateBigramFrequencies)
+# evalOverPeriods(ciphertext, evaluateQuadgramFrequencies)
