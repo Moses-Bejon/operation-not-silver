@@ -12,20 +12,32 @@ class polybiusGrid():
 
         # default arguments are shared between instances.
         # If this deep copy weren't present every single polybius grid currently instantiated would share the same array
-        self.__grid = deepcopy(gridCharacters)
+        self._grid = deepcopy(gridCharacters)
 
         self.__coordinates = []
-        self.__characterToCoordinates = {}
+        self._characterToCoordinates = {}
         for y,row in enumerate(gridCharacters):
             for x,character in enumerate(row):
-                self.__characterToCoordinates[character] = (x,y)
+                self._characterToCoordinates[character] = (x, y)
                 self.__coordinates.append((x,y))
 
     def getCoordinatesOfCharacter(self,character):
-        return self.__characterToCoordinates[character]
+        return self._characterToCoordinates[character]
 
     def getCharacterAtCoordinates(self,x,y):
-        return self.__grid[y][x]
+        return self._grid[y][x]
+
+    def getGrid(self):
+        return self._grid
+
+    def test(self):
+        for rowNum,row in enumerate(self._grid):
+            for colNum,col in enumerate(row):
+                if (colNum,rowNum) != self._characterToCoordinates[col]:
+                    print("CRITICAL ERROR")
+                    print(self._grid)
+                    print(self._characterToCoordinates)
+                    exit(1)
 
     def shuffle(self):
 
@@ -34,15 +46,15 @@ class polybiusGrid():
         self.__firstCharacter = self.getCharacterAtCoordinates(self.__swappedCoordinates[0][0],self.__swappedCoordinates[0][1])
         self.__secondCharacter = self.getCharacterAtCoordinates(self.__swappedCoordinates[1][0],self.__swappedCoordinates[1][1])
 
-        self.__characterToCoordinates[self.__firstCharacter] = self.__swappedCoordinates[1]
-        self.__characterToCoordinates[self.__secondCharacter] = self.__swappedCoordinates[0]
+        self._characterToCoordinates[self.__firstCharacter] = self.__swappedCoordinates[1]
+        self._characterToCoordinates[self.__secondCharacter] = self.__swappedCoordinates[0]
 
-        self.__grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__secondCharacter
-        self.__grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__firstCharacter
+        self._grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__secondCharacter
+        self._grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__firstCharacter
 
     def undoShuffle(self):
-        self.__characterToCoordinates[self.__firstCharacter] = self.__swappedCoordinates[0]
-        self.__characterToCoordinates[self.__secondCharacter] = self.__swappedCoordinates[1]
+        self._characterToCoordinates[self.__firstCharacter] = self.__swappedCoordinates[0]
+        self._characterToCoordinates[self.__secondCharacter] = self.__swappedCoordinates[1]
 
-        self.__grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__firstCharacter
-        self.__grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__secondCharacter
+        self._grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__firstCharacter
+        self._grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__secondCharacter
