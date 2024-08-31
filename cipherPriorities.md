@@ -42,7 +42,6 @@ that the coordinates are binary, binary, ternary, and binary digits.
 ## AMSCO 
 ### 2014 7B, 2015 7B
 
-# Disk cipher (cipher clock) 
-### 2020 7B, 2020 SE
-
+# Disk ciphers
+### 2009 final challenge (Jefferson wheel), 2020 7B, 2020 SE (both cipher clocks)
 
