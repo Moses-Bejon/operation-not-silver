@@ -1,4 +1,11 @@
-# To be run in hillClimb. Optimal conditions: shake threshold: 100 shake amount: 1
+# To be run in hillClimbWithMargin. 
+# Optimal conditions: 
+# margin = 0.2*length
+# chance to shuffle = 5*math.e**(0.1*score/length))
+# add the adjacency bonus to the evaluated score in a 1:1 ratio i.e:
+# def evaluate(plainText)
+#     return cipher.getAdjacencyBonus() + evaluateQuadgramFrequencies(plainText)
+# and run the hill climb with the above evaluate
 
 from polybiusGridEnhancedShuffle import polybiusGridEnhancedShuffle
 
@@ -45,3 +52,6 @@ class playfair:
 
     def undoShuffle(self):
         self.__key.undoShuffle()
+
+    def getAdjacencyBonus(self):
+        return self.__key.getAdjacencyBonus()
