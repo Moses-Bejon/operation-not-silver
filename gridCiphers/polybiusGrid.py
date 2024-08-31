@@ -58,3 +58,14 @@ class polybiusGrid():
 
         self._grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__firstCharacter
         self._grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__secondCharacter
+
+    def getAdjacencyBonus(self):
+        adjacencyBonus = 0
+        previous = self._grid[0][0]
+
+        for row in self._grid:
+            for character in row:
+                adjacencyBonus += (character-previous)**2
+                previous = character
+
+        return -adjacencyBonus
