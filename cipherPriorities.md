@@ -2,7 +2,7 @@
 
 # Grid ciphers 
 
-## Bifid 
+## Bifid ✅
 
 ### 2013 7B, 2016 7B, 2019 9B 
 #### Modifications: 
