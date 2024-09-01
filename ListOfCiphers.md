@@ -53,7 +53,7 @@ _Under gridCiphers folder_
 - Unit 78: Phillips-RC cipher (optional)
 - Unit 79: Double Playfair cipher
 - **Unit 80: Nihilist substitution cipher** ✅ - Contains a bug, does not solve all exercises in the cipher book
-- Unit 81: Bifid cipher
+- Unit 81: Bifid cipher✅
 - Unit 82: Trifid cipher
 - **Unit 83: ADFGX cipher**✅ - isn't as reliable as I'd like it to be
 - **Unit 84: ADFGVX cipher**✅ - isn't as reliable as I'd like it to be
