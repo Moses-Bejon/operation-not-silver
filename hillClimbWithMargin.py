@@ -1,5 +1,7 @@
+import math
 import random
-from formatCipher import intToString
+from formatCipher import intToString, stringToInt
+from evaluate import evaluateQuadgramFrequencies
 
 # a hill climb attack continuously randomly shuffles the key and only keeps the shuffle if it was superior to the last
 
@@ -14,7 +16,9 @@ def hillClimb(cipher,evaluate):
     maxScore = evaluate(maxPlainText)
     actualMaxScore = maxScore
 
+    margin = 0.15 * length
     count = 0
+    withoutClimbing = 0
 
     while True:
         count += 1
@@ -25,6 +29,8 @@ def hillClimb(cipher,evaluate):
 
         score = evaluate(plainText)
 
+        chanceToShuffle = 5 * math.exp(0.08 * score/length)
+
         # we should only tell the user if we've actually made progress
         if score > actualMaxScore:
             print(intToString(plainText))
@@ -33,24 +39,27 @@ def hillClimb(cipher,evaluate):
 
             actualMaxScore = score
             maxScore = score
+            withoutClimbing = 0
 
-        elif score > maxScore or (score > maxScore-length*0.1 and random.random() > 0.5):
+        elif score > maxScore or (score > maxScore-margin and random.random() > chanceToShuffle):
             maxScore = score
+            withoutClimbing = 0
 
         else:
             cipher.undoShuffle()
+            withoutClimbing += 1
 
-from verticalTwoSquare import verticalTwoSquare
-from evaluate import evaluateQuadgramFrequencies
-from formatCipher import stringToInt
+            if withoutClimbing >= 10000:
+                try:
+                    cipher.shake()
+                except AttributeError:
+                    for _ in range(5):
+                        cipher.shuffle()
+                withoutClimbing = 0
+                plainText = cipher.decipher()
+                maxScore = evaluate(plainText)
 
-cipher = verticalTwoSquare(stringToInt("""
-XCSOKGSOMYHBMQBWSOLYEWLYMXPRHZSTNZQCMZLGMBMPWILWQQBPVG
-ICHHVPPRQKIQMAMHMZXBHZAYHUHDBWVDTIMBAYNYVDNTIYUHHTKEHP
-PGCNSCEVXCSOSMKXPWIRACTTHEQCVDSNNZELDBIYPGYTKEITKGSOLZ
-OWHTMFLZHELOITDIITWRACTOSCMZSOLGFLRDLYAXSOLYHFLYSOAZTB
-TWIYDBMXMKIQBXRXVTNLMNKZSOPYPCHTTRMWQQIQTBVGTWKZTBVGIY
-YBIXPZNLQZMZMBPPBINTICMBKGBISIDZVDMOKGDWNTHEKEDUVDZQ
-"""))
-
-hillClimb(cipher,evaluateQuadgramFrequencies)
+# cipher = () 
+# def evaluate(plainText):
+#     return cipher.getAdjacencyBonus() + evaluateQuadgramFrequencies(plainText)
+# hillClimb(cipher,evaluateQuadgramFrequencies)

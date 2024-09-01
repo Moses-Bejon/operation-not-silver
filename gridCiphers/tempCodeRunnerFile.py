@@ -1,3 +1,0 @@
-
-    #     # swap
-    #     self.__keySquare = 

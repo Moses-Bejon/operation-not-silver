@@ -7,7 +7,6 @@ class polybiusGridEnhancedShuffle(polybiusGrid):
         super().__init__(gridCharacters)
 
     def shuffle(self):
-        self.test()
         randomNum = random.random()
 
         if randomNum < 0.9:
@@ -19,7 +18,6 @@ class polybiusGridEnhancedShuffle(polybiusGrid):
         else:
             self.__shuffleMode = 2
             self.swapColumns()
-        self.test()
 
     def swapRows(self):
         self.__swap = random.sample(range(5), 2)
@@ -55,7 +53,6 @@ class polybiusGridEnhancedShuffle(polybiusGrid):
             self._characterToCoordinates[self._grid[rowB][x]] = (x, rowB)
 
     def undoShuffle(self):
-        self.test()
         match self.__shuffleMode:
             case 0:
                 super().undoShuffle()
@@ -63,4 +60,3 @@ class polybiusGridEnhancedShuffle(polybiusGrid):
                 self.undoSwapRows()
             case 2:
                 self.undoSwapColumns()
-        self.test()
