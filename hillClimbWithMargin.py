@@ -1,4 +1,7 @@
+import math
 import random
+from formatCipher import intToString, stringToInt
+from evaluate import evaluateQuadgramFrequencies
 
 # a hill climb attack continuously randomly shuffles the key and only keeps the shuffle if it was superior to the last
 
@@ -13,6 +16,7 @@ def hillClimb(cipher,evaluate):
     maxScore = evaluate(maxPlainText)
     actualMaxScore = maxScore
 
+    margin = 0.15 * length
     count = 0
     withoutClimbing = 0
 
@@ -25,6 +29,8 @@ def hillClimb(cipher,evaluate):
 
         score = evaluate(plainText)
 
+        chanceToShuffle = 5 * math.exp(0.08 * score/length)
+
         # we should only tell the user if we've actually made progress
         if score > actualMaxScore:
             print(intToString(plainText))
@@ -35,7 +41,7 @@ def hillClimb(cipher,evaluate):
             maxScore = score
             withoutClimbing = 0
 
-        elif score > maxScore or (score > maxScore-length*0.2 and random.random() > 0.5):
+        elif score > maxScore or (score > maxScore-margin and random.random() > chanceToShuffle):
             maxScore = score
             withoutClimbing = 0
 
@@ -52,3 +58,8 @@ def hillClimb(cipher,evaluate):
                 withoutClimbing = 0
                 plainText = cipher.decipher()
                 maxScore = evaluate(plainText)
+
+# cipher = () 
+# def evaluate(plainText):
+#     return cipher.getAdjacencyBonus() + evaluateQuadgramFrequencies(plainText)
+# hillClimb(cipher,evaluateQuadgramFrequencies)
