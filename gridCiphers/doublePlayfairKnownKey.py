@@ -31,8 +31,8 @@ class doublePlayfairKnownKey:
 
         colA, rowA = posA
         colB, rowB = posB
-    
-        # handles wraparounds 
+
+        # handles wraparounds
         if rowA == rowB:
             # same row= shift columns left
             newA = self.grid1.getCharacterAtCoordinates((colA - 1 + 5) % 5, rowA)
@@ -71,6 +71,11 @@ class doublePlayfairKnownKey:
 
         return ''.join(plainText)
 
+    def testPeriods(self, cipherText, maxPeriod=None):
+        for period in range(1, maxPeriod +1):
+            plainText = self.decipher(cipherText, period)
+            print (f'Period: {period}: {plainText}')
+
 
 cipherText = 'TWFAATNIOYRAXMTAMZAOMRIVASEAPRIGAAFQAK'
 
@@ -79,4 +84,4 @@ keyword2 = "KEYWORD"
 
 test = doublePlayfairKnownKey(keyword1, keyword2, fill1="horizontal", fill2="vertical")
 plainText = test.decipher(cipherText, 7)
-print(plainText)
+test.testPeriods(cipherText, 10)
