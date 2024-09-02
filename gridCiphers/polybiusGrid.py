@@ -199,3 +199,10 @@ class polybiusGrid():
             visited.add((x, y))
 
         return -spiralAdjacencyBonusCCW
+
+    def getAdjacencyBonus(self):
+        return max(self.getHorizontalAdjacencyBonus(),
+                   self.getVerticalAdjacencyBonus(),
+                   self.getSpiralCCWAdjacencyBonus(),
+                   self.getSpiralCWAdjacencyBonus()
+                  )
