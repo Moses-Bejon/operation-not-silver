@@ -3,19 +3,19 @@
 # margin: length*0.2
 # chance to shuffle: 0.5
 
-from polybiusGridEnhancedShuffle import polybiusGridEnhancedShuffle
+from polybiusGrid import polybiusGrid
 from evaluate import getLetterFrequencies,getIOC
 
 class bifid():
 
     def __init__(self,cipher):
-        self.__cipher = cipher
-        self.__length = len(self.__cipher)
-        self.__key = polybiusGridEnhancedShuffle()
+        self._cipher = cipher
+        self._length = len(self._cipher)
+        self._key = polybiusGrid()
 
         bestIOC = 0
         bestPeriod = 0
-        for possiblePeriod in range(2,len(self.__cipher)):
+        for possiblePeriod in range(2, len(self._cipher)):
             self.setPeriod(possiblePeriod)
             IOC = getIOC(*getLetterFrequencies(self.decipher()))
 
@@ -24,51 +24,51 @@ class bifid():
                 bestPeriod = possiblePeriod
 
         if bestPeriod > 20:
-            bestPeriod = len(self.__cipher)
+            bestPeriod = len(self._cipher)
         self.setPeriod(bestPeriod)
         print("using period",bestPeriod)
 
     def setPeriod(self,period):
-        self.__period = period
+        self._period = period
 
-        self.__fractions = []
-        for i in range(period,self.__length,period):
-            self.__fractions.append(self.__cipher[i-period:i])
+        self._fractions = []
+        for i in range(period, self._length, period):
+            self._fractions.append(self._cipher[i - period:i])
 
-        self.__lastFractionLength = self.__length%period
+        self._lastFractionLength = self._length % period
 
-        self.__lastFraction = self.__cipher[-self.__lastFractionLength:]
+        self._lastFraction = self._cipher[-self._lastFractionLength:]
 
-        if self.__lastFractionLength == 0:
-            self.__lastFractionLength = period
+        if self._lastFractionLength == 0:
+            self._lastFractionLength = period
 
     def decipher(self):
 
         plainText = []
-        for fraction in self.__fractions:
+        for fraction in self._fractions:
             coordinates = []
 
             for character in fraction:
-                coordinateOfCharacter = self.__key.getCoordinatesOfCharacter(character)
+                coordinateOfCharacter = self._key.getCoordinatesOfCharacter(character)
                 coordinates.append(coordinateOfCharacter[1])
                 coordinates.append(coordinateOfCharacter[0])
 
-            for i in range(self.__period):
-                plainText.append(self.__key.getCharacterAtCoordinates(coordinates[i + self.__period], coordinates[i]))
+            for i in range(self._period):
+                plainText.append(self._key.getCharacterAtCoordinates(coordinates[i + self._period], coordinates[i]))
 
         coordinates = []
-        for character in self.__lastFraction:
-            coordinateOfCharacter = self.__key.getCoordinatesOfCharacter(character)
+        for character in self._lastFraction:
+            coordinateOfCharacter = self._key.getCoordinatesOfCharacter(character)
             coordinates.append(coordinateOfCharacter[1])
             coordinates.append(coordinateOfCharacter[0])
 
-        for i in range(self.__lastFractionLength):
-            plainText.append(self.__key.getCharacterAtCoordinates(coordinates[i + self.__lastFractionLength], coordinates[i]))
+        for i in range(self._lastFractionLength):
+            plainText.append(self._key.getCharacterAtCoordinates(coordinates[i + self._lastFractionLength], coordinates[i]))
 
         return plainText
 
     def shuffle(self):
-        self.__key.shuffle()
+        self._key.shuffle()
 
     def undoShuffle(self):
-        self.__key.undoShuffle()
+        self._key.undoShuffle()
