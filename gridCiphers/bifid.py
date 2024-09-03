@@ -4,20 +4,21 @@
 # chance to shuffle: 0.5
 
 from polybiusGrid import polybiusGrid
-from evaluate import getLetterFrequencies,getIOC
+from evaluate import getLetterFrequenciesForAnyNumberOfCharacters,getIOC
 
 class bifid():
 
-    def __init__(self,cipher):
+    def __init__(self,cipher,key=polybiusGrid):
         self._cipher = cipher
         self._length = len(self._cipher)
-        self._key = polybiusGrid()
+
+        self._key = key()
 
         bestIOC = 0
         bestPeriod = 0
-        for possiblePeriod in range(2, len(self._cipher)):
+        for possiblePeriod in range(2, min(len(self._cipher),100)):
             self.setPeriod(possiblePeriod)
-            IOC = getIOC(*getLetterFrequencies(self.decipher()))
+            IOC = getIOC(*getLetterFrequenciesForAnyNumberOfCharacters(self.decipher()))
 
             if IOC > bestIOC:
                 bestIOC = IOC
