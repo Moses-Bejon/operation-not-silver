@@ -49,25 +49,19 @@ class doublePlayfairKnownKey:
         return newA, newB
 
     def decipher(self, cipherText, period):
-        plainText = []
+        plainText = [''] * len(cipherText)
 
-        # divide cipherText into blocks twice of the period
-        blocks = [cipherText[i:i + 2 * period] for i in range(0, len(cipherText), 2 * period)]
+        # deal with adjacent pairs first
+        for i in range(0, len(cipherText), 2):
+            a = cipherText[i]
+            b = cipherText[i + 1]
 
-        # split block into two rows
-        for block in blocks:
-            half = len(block) // 2
-            top = block[:half]
-            bottom = block[half:]
+            newA, newB = self.decodePair(a, b)
+            finalA, finalB = self.decodePair(newA, newB)
 
-            # pairs of letters= one from top row and one from bottom
-            for a, b in zip(top, bottom):
-                # Double decryption
-                newA, newB = self.decodePair(a, b)
-                finalA, finalB = self.decodePair(newA, newB)
-
-                plainText.append(finalA)
-                plainText.append(finalB)
+            # split text based on period
+            plainText[i // 2] = finalA
+            plainText[(i // 2) + period] = finalB
 
         return ''.join(plainText)
 
@@ -79,8 +73,8 @@ class doublePlayfairKnownKey:
 
 cipherText = 'TWFAATNIOYRAXMTAMZAOMRIVASEAPRIGAAFQAK'
 
-keyword1 = "POLYBIUS"
-keyword2 = "KEYWORD"
+keyword1 = 'POLYBIUS'
+keyword2 = 'KEYWORD'
 
 test = doublePlayfairKnownKey(keyword1, keyword2, fill1="horizontal", fill2="vertical")
 plainText = test.decipher(cipherText, 7)
