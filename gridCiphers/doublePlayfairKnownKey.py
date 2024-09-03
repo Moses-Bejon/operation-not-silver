@@ -1,4 +1,5 @@
 from polybiusGrid import polybiusGrid
+# MAKE SURE THE KEYWORDS DO NOT CONTAIN ANY REPEATED LETTERS
 
 class doublePlayfairKnownKey:
 
@@ -26,44 +27,62 @@ class doublePlayfairKnownKey:
             print('ERROR')
 
     def decodePair(self, a, b):
+        # Find the positions of the letters in their respective grids
         posA = self.grid1.getCoordinatesOfCharacter(a)
         posB = self.grid2.getCoordinatesOfCharacter(b)
 
         colA, rowA = posA
         colB, rowB = posB
 
+        # print(f'decode pair: {a} ({posA}) and {b} ({posB})')
+
         # handles wraparounds
         if rowA == rowB:
-            # same row= shift columns left
-            newA = self.grid1.getCharacterAtCoordinates((colA - 1 + 5) % 5, rowA)
-            newB = self.grid2.getCharacterAtCoordinates((colB - 1 + 5) % 5, rowB)
-        elif colA == colB:
-            # same column= shift rows up
-            newA = self.grid1.getCharacterAtCoordinates(colA, (rowA - 1 + 5) % 5)
-            newB = self.grid2.getCharacterAtCoordinates(colB, (rowB - 1 + 5) % 5)
+            # same row = shift columns right
+            newA = self.grid1.getCharacterAtCoordinates((colA + 1) % 5, rowA)
+            newB = self.grid2.getCharacterAtCoordinates((colB + 1) % 5, rowB)
+
         else:
-            # rectangle swap= swap columns, keep rows
-            newA = self.grid1.getCharacterAtCoordinates(colB, rowA)
-            newB = self.grid2.getCharacterAtCoordinates(colA, rowB)
+            # rectangle swap = swap col, keep rows
+            newA = self.grid1.getCharacterAtCoordinates(colA, rowB)
+            newB = self.grid2.getCharacterAtCoordinates(colB, rowA)
 
         return newA, newB
 
     def decipher(self, cipherText, period):
-        plainText = [''] * len(cipherText)
+        top = []
+        bottom = []
 
         # deal with adjacent pairs first
         for i in range(0, len(cipherText), 2):
             a = cipherText[i]
             b = cipherText[i + 1]
 
+            # print(a, b)
+
             newA, newB = self.decodePair(a, b)
-            finalA, finalB = self.decodePair(newA, newB)
+            finalA, finalB = self.decodePair(newB, newA)
+            finalB, finalA = finalA, finalB
+
+            # print(f'final stuff: {finalA},{finalB}')
 
             # split text based on period
-            plainText[i // 2] = finalA
-            plainText[(i // 2) + period] = finalB
 
-        return ''.join(plainText)
+            top.append(finalA)
+            bottom.append(finalB)
+
+            combineTop = [top[i:i+period] for i in range(0, len(top), period)]
+            combineBottom = [bottom[i:i+period] for i in range(0, len(bottom), period)]
+
+            plainText = []
+            for i in range(max(len(combineTop), len(combineBottom))):
+                if i < len(combineTop):
+                    plainText.append(combineTop[i])
+                if i < len(combineBottom):
+                    plainText.append(combineBottom[i])
+
+            li2 = [ y for x in plainText for y in x]
+        return ''.join(map(str,li2))
 
     def testPeriods(self, cipherText, maxPeriod=None):
         for period in range(1, maxPeriod +1):
@@ -71,11 +90,12 @@ class doublePlayfairKnownKey:
             print (f'Period: {period}: {plainText}')
 
 
-cipherText = 'TWFAATNIOYRAXMTAMZAOMRIVASEAPRIGAAFQAK'
-
-keyword1 = 'POLYBIUS'
-keyword2 = 'KEYWORD'
-
-test = doublePlayfairKnownKey(keyword1, keyword2, fill1="horizontal", fill2="vertical")
-plainText = test.decipher(cipherText, 7)
-test.testPeriods(cipherText, 10)
+# cipherText = 'DTQFQAKMGIMEAEQHRVZDATAANIFOHUTMFIBXTTRFQMFIFIHDGURWTIPSSBIKTEDFLAKVANUSOHIMQBVASSACONLDVEALAEHNGIGUELPEESGPCBFNFIRFSIKVITNGQMDXQBXISIAHIASHAIGKLBECCQAFMMGUTTFDNKEIDBSIHUCDNCOMKKGIMMGXTTTBRCBCRBDPBDSLZZLDQEDPBMSMRAFFELMESSBDOCEEREPELBIIPGQBTFTTKBTBXSKKGUQHFNUDQRDYLU'
+#
+# keyword1 = 'GRIDON'
+# keyword2 = 'FOTBAL'
+#
+# test = doublePlayfairKnownKey(keyword2, keyword1, fill1="horizontal", fill2="horizontal")
+# plainText = test.decipher(cipherText, 6)
+# # test.testPeriods(cipherText, 10)
+# print(plainText)
