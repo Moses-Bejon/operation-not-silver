@@ -13,7 +13,7 @@ and diffusion steps can be done, but the recombination back into letters
 cannot. The period is clearly 7. The size of the box is 2x2x3x2, so
 that the coordinates are binary, binary, ternary, and binary digits.
 
-## Trifid 
+## Trifid ✅
 ### 2012 8B, 2020 SE, 2019 9B 
 #### Modifications: 
 2012 - partly a trifid cipher and partly a transposition cipher: https://github.com/themaddoctor/BritishNationalCipherChallenge/blob/151d4247cfe9c3712e2c36145ebb0074dde3cb63/2012/8B/solution.txt#L2
