@@ -30,6 +30,72 @@ class polybiusGrid():
     def getGrid(self):
         return self._grid
 
+    # Fill row by row, left to right
+    def fillHorizontally(self, character):
+        index = 0
+        for y in range(5):
+            for x in range(5):
+                self._grid[y][x] = character[index]
+                self._characterToCoordinates[character[index]] = (x,y)
+                index += 1
+
+    # fill column by column, top to bottom
+    def fillVertically(self, character):
+        index = 0
+        for x in range(5):
+            for y in range(5):
+                self._grid[y][x] = character[index]
+                self._characterToCoordinates[character[index]] = (x,y)
+                index += 1
+
+    # start at top left and spiral inward CW
+    def fillSpiralCW(self, character):
+        directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        x, y = 0, 0
+        directionIndex = 0
+        visited = set()
+
+        for char in character:
+            self._grid[y][x] = char
+            self._characterToCoordinates[char] = (x, y)
+            visited.add(x, y)
+
+            nextX = x + directions[directionIndex][0]
+            nextY = y + directions[directionIndex][1]
+
+            # check if next cell is out of bounds or already visited
+            if not (0 <= nextX < len(self._grid[0]) and 0 <= nextY < len(self._grid)) or (nextX, nextY) in visited:
+                # change direction
+                directionIndex = (directionIndex + 1) % 4
+                nextX = x + directions[directionIndex][0]
+                nextY = y + directions[directionIndex][1]
+
+            x, y = nextX, nextY
+
+    # start at top left and spiral inward CCW
+    def fillSpiralCCW(self, character):
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        x, y = 0, 0
+        directionIndex = 0
+        visited = set()
+
+        for char in character:
+            self._grid[y][x] = char
+            self._characterToCoordinates[char] = (x, y)
+            visited.add((x, y))
+
+            nextX = x + directions[directionIndex][0]
+            nextY = y + directions[directionIndex][1]
+
+            # check if next cell is out of bounds or already visited
+            if not (0 <= nextX < len(self._grid[0]) and 0 <= nextY < len(self._grid)) or (nextX, nextY) in visited:
+                # change direction
+                directionIndex = (directionIndex + 1) % 4
+                nextX = x + directions[directionIndex][0]
+                nextY = y + directions[directionIndex][1]
+
+            x, y = nextX, nextY
+
     def test(self):
         for rowNum,row in enumerate(self._grid):
             for colNum,col in enumerate(row):
@@ -59,7 +125,7 @@ class polybiusGrid():
         self._grid[self.__swappedCoordinates[0][1]][self.__swappedCoordinates[0][0]] = self.__firstCharacter
         self._grid[self.__swappedCoordinates[1][1]][self.__swappedCoordinates[1][0]] = self.__secondCharacter
 
-    def getAdjacencyBonus(self):
+    def getHorizontalAdjacencyBonus(self):
         horizontalAdjacencyBonus = 0
         previous = self._grid[0][0]
 
@@ -68,6 +134,9 @@ class polybiusGrid():
                 horizontalAdjacencyBonus += (character-previous)**2
                 previous = character
 
+        return -horizontalAdjacencyBonus
+
+    def getVerticalAdjacencyBonus(self):
         verticalAdjacencyBonus = 0
         previous = self._grid[0][0]
 
@@ -77,4 +146,63 @@ class polybiusGrid():
                 verticalAdjacencyBonus += (character-previous)**2
                 previous = character
 
-        return max(-horizontalAdjacencyBonus,-verticalAdjacencyBonus)
+        return -verticalAdjacencyBonus
+
+    def getSpiralCWAdjacencyBonus(self):
+        spiralAdjacencyBonusCW = 0
+        directionsCW = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        x, y = 0, 0
+        directionIndex = 0
+        visited = set()
+        visited.add((x, y))
+        previous = self._grid[y][x]
+
+        for _ in range(len(self._grid) * len(self._grid[0]) - 1):
+            nextX = x + directionsCW[directionIndex][0]
+            nextY = y + directionsCW[directionIndex][1]
+
+            if not (0 <= nextX < len(self._grid[0]) and 0 <= nextY < len(self._grid)) or (nextX, nextY) in visited:
+                directionIndex = (directionIndex + 1) % 4
+                nextX = x + directionsCW[directionIndex][0]
+                nextY = y + directionsCW[directionIndex][1]
+
+            x, y = nextX, nextY
+            current = self._grid[y][x]
+            spiralAdjacencyBonusCW += (current-previous)**2
+            previous = current
+            visited.add((x, y))
+
+        return -spiralAdjacencyBonusCW
+
+    def getSpiralCCWAdjacencyBonus(self):
+        spiralAdjacencyBonusCCW = 0
+        directionsCCW = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        x, y = 0, 0
+        directionIndex = 0
+        visited = set()
+        visited.add((x, y))
+        previous = self._grid[y][x]
+
+        for _ in range(len(self._grid) * len(self._grid[0]) - 1):
+            nextX = x + directionsCCW[directionIndex][0]
+            nextY = y + directionsCCW[directionIndex][1]
+
+            if not (0 <= nextX < len(self._grid[0]) and 0 <= nextY < len(self._grid)) or (nextX, nextY) in visited:
+                directionIndex = (directionIndex + 1) % 4
+                nextX = x + directionsCCW[directionIndex][0]
+                nextY = y + directionsCCW[directionIndex][1]
+
+            x, y = nextX, nextY
+            current = self._grid[y][x]
+            spiralAdjacencyBonusCCW += (current-previous) **2
+            previous = current
+            visited.add((x, y))
+
+        return -spiralAdjacencyBonusCCW
+
+    def getAdjacencyBonus(self):
+        return max(self.getHorizontalAdjacencyBonus(),
+                   self.getVerticalAdjacencyBonus(),
+                   self.getSpiralCCWAdjacencyBonus(),
+                   self.getSpiralCWAdjacencyBonus()
+                  )
