@@ -44,7 +44,8 @@ keys = [
     "roosevelt",
     "thefuhrer",
     "georgesix",
-    "coastline"
+    "coastline",
+    "explained"
 ]
 
 def tryKey(key):
