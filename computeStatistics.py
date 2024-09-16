@@ -86,7 +86,7 @@ def nGramFreqencyPlot(n, frequencies):
     plt.xlabel(n+"-gram")
     plt.ylabel("Count")
     plt.title(n+"-gram frequencies")
-    plt.bar([str(gram[0]) for gram in frequencies] , [gram[1] for gram in frequencies])
+    plt.bar([chr(gram[0]+97) for gram in frequencies] , [gram[1] for gram in frequencies])
     plt.show()
 
 def getMissingLetter(letterFrequencies):
