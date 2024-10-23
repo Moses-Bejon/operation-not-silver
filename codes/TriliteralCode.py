@@ -153,35 +153,35 @@ for i in num:
         if len(code2) == 3:
             try:
                 list2+=codes1[code2]
-                list22+=codes1[code2]
+                list22+=codes2[code2]
                 code2 = ''
             except:
                 valid2 = False
         if len(code3) == 3:
             try:
                 list3+=codes1[code3]
-                list23+=codes1[code3]
+                list23+=codes2[code3]
                 code3 = ''
             except:
                 valid3 = False
         if len(code4) == 3:
             try:
                 list4+=codes1[code4]
-                list24+=codes1[code4]
+                list24+=codes2[code4]
                 code4 = ''
             except:
                 valid4 = False
         if len(code5) == 3:
             try:
                 list5+=codes1[code5]
-                list25+=codes1[code5]
+                list25+=codes2[code5]
                 code5 = ''
             except:
                 valid5 = False
         if len(code6) == 3:
             try:
                 list6+=codes1[code6]
-                list26+=codes1[code6]
+                list26+=codes2[code6]
                 code6 = ''
             except:
                 valid6 = False
@@ -221,7 +221,7 @@ if valid6:
 if not(valid6 or valid1 or valid2 or valid3 or valid4 or valid5):
     print('False')
 
-print('\n\nSPACE = CCC\n\n')
+print('\n\nSPACE = AAA\n\n')
 if valid1:
     print(chara,'= A')
     print(charb,'= B')
