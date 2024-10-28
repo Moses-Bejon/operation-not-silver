@@ -23,7 +23,7 @@ that the coordinates are binary, binary, ternary, and binary digits.
 
 
 # Stream Ciphers 
-## Trithemius cipher 
+## Trithemius cipher ✅
 ### 2006 6B, 2012 2A, 2019 8A, 2020 SE
 #### Modifications: 
 2006 - only 24 letters (no j,v)
