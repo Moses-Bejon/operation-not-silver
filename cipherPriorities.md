@@ -35,7 +35,7 @@ that the coordinates are binary, binary, ternary, and binary digits.
 #### Modifications: 
 2010 - 5-bit bacon https://github.com/themaddoctor/BritishNationalCipherChallenge/blob/151d4247cfe9c3712e2c36145ebb0074dde3cb63/Harry's%20Game%202010/8A/solution.txt#L3
 
-## Trileteral ✅
+## Triliteral ✅
 ### 2010 SE 
 
 # Transposition 
