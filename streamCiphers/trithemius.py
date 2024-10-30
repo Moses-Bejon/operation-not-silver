@@ -11,7 +11,7 @@ class trithemius():  # also name the file the same way please
         self.listOfKeys = []
         # do any computation you need to do beforehand here
         for s in range(26):
-            for pmod in ['p+s', 'p-s', 's-p']:
+            for pmod in ['p+s', 'p-s', '-s-p']:
                 self.listOfKeys.append([pmod,s])
 
 
@@ -25,8 +25,8 @@ class trithemius():  # also name the file the same way please
                     p = (p - keys[1]) % 26
                 elif keys[0] == 'p-s':
                     p = (p + keys[1]) % 26
-                elif keys[0] == 's-p':
-                    p = (keys[1] - (p+1)) % 26
+                elif keys[0] == '-s-p':
+                    p = (-keys[1] - (p+1)) % 26
                 p = chr(p + 65)
                 keys[1] += 1
                 plain += p
