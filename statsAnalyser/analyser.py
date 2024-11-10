@@ -1,13 +1,13 @@
 from sklearn.svm import LinearSVC
 from sklearn import model_selection
 from sklearn.ensemble import RandomForestClassifier
-
+import pickle
 import pandas as pd
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
 from computeStatistics import getStatistics
-from extractData_clean import generateYearsCSV
+from extractData_clean import generateYearsCSV, generateAllCSV
 
 
 rf = RandomForestClassifier()
@@ -92,20 +92,20 @@ def predict_text(model, testfile): # no ciphertype provided.
         
         return model.predict(df)
 
+def saveModel(model, name):
+    with open(name+'.pkl','wb') as f:
+        pickle.dump(model,f)
 
+def loadModel(name):
+    with open(name+'.pkl', 'rb') as f:
+        model = pickle.load(f)
+        return model
+    print("Something went wrong.")
+# train the model
 def main():
-    # train the model
-    filename = generateYearsCSV(2020, 2023)
+    filename = generateAllCSV()
     X, y = get_X_y(filename)
     model = RandomForestClassifier()
     train_test(model, X, y)
     testfile = 'test_ciphertext.txt'
 
-    label = predict_text(model, testfile)
-    print("Predicted:" + label[0])
-    
-
-
-
-
-main()

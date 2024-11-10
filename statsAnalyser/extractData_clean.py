@@ -14,14 +14,15 @@ from statsAnalyser.computeStatistics import getStatistics
 # Create a list to store the data
 data = []
 def remove_name_variations(cipher_type):
+    cipher_type = cipher_type.lower()
     cipher_type = cipher_type.replace("cipher: ", "")
     cipher_type = cipher_type.replace("cipher", "")
     cipher_type = cipher_type.strip()
     name_variations = {
-        "monoalphabetic substitution": ["Caesar shift", "affine","atbash", 
+        "monoalphabetic substitution": ["caesar shift", "affine","atbash", 
                                         "keyword substitution", "keyed substitution", 
                                         "monoalphabetic substitution"],
-        "Vigenere": ["Vigenere"],
+        "vigenere": ["vigenere"],
         "clock": ["clock"],
         # "Hill": ["Hill"],
         "columnar transposition": ["columnar transposition"]
@@ -97,3 +98,24 @@ def generateYearsCSV(start, end):
     print(df.tail()["CipherType"])  # To check the first few rows
     return filename
 
+def generateAllCSV(): # using cleaned folders
+    '''Generates a csv with all challenges including special editions and harry's game. 
+    If file already exists, it simply returns the file name.'''
+    filename = 'All' + '_ciphertext_data_stats.csv'
+    if filename in os.listdir('.'):
+        return filename
+
+    for year in os.listdir(dataset_path):
+        year_path = os.path.join(dataset_path, str(year))
+        if '.' in year_path:
+            continue
+
+        for challenge in os.listdir(year_path):
+            load_challenge(year_path, challenge)
+    # Convert the list of dictionaries into a pandas DataFrame
+    df = pd.DataFrame(data)
+    df.dropna(axis=0, inplace=True) 
+    # Output the data to a CSV or use it directly in your processing
+    df.to_csv(filename, index=False)
+    print(df.tail()["CipherType"])  # To check a few rows
+    return filename
