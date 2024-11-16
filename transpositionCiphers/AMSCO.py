@@ -1,4 +1,4 @@
-# to be used in hillClimb.py with key length withoutClimbingLimit = 100
+# to be used in hillClimb.py with withoutClimbingLimit = 100
 
 from numpy import argsort
 import random
@@ -168,24 +168,3 @@ class AMSCO():
             currentColumnIsBigram = not currentColumnIsBigram
 
         return plainText
-
-if __name__ == "__main__":
-    from formatCipher import stringToInt,intToString
-    """
-        SMAEDAON ACRHOSH THGYPAITE IEWTTRIR SSNITPIP ESEWNSC
-    """
-    """
-        SASEANO SARTHSPH TGEYATIER HIWPTRTI SNCIPOI MEEDWSNC
-    """
-    """
-        SMWYPHPOC THANCWANIER IGERITSON SSEEDRITH EASTATSIP
-    """
-    """
-        SEWYTHPNC TSANDWATIE HIGCRINSOR SSEETRIPH MEAPTAOSI
-    """
-    cipher = AMSCO(stringToInt(
-        """
-        THWEDSIP IASWPOH SMEITSER ENCHIT SSRATI AYPRON GETANC
-        """
-    ))
-    print(intToString(cipher.decipher()))
