@@ -39,7 +39,7 @@ _Under transpositionCiphers folder_
 - **Unit 62: Nihilist transposition cipher**✅ - some variants not covered
 - **Unit 63: Railfence cipher**✅ - can technically be further optimised but likely isn't necessary
 - Unit 64: Redefence cipher (optional)
-- Unit 65: AMSCO cipher
+- Unit 65: AMSCO cipher✅
 - Unit 66: Myszkowsky cipher (optional)
 - **Unit 67: Cadenus cipher**✅ - can be further optimised
 
@@ -64,7 +64,7 @@ _Under matricesCiphers_✅ (2x2)
 
 _Under streamCiphers_
 - Unit 90: Stream ciphers
-- Unit 91: Trithemius cipher
+- Unit 91: Trithemius cipher✅
 - **Unit 92: Autokey cipher** ✅ - Beaufort variant not covered 
 - **Unit 95: Running-key cipher** ✅
 - Unit 96: Progressive Vigenère cipher
@@ -72,8 +72,8 @@ _Under streamCiphers_
 
 _Under codes_
 - Unit 99: Codes
-- Unit 100: Baconian cipher
-- Unit 101: Triliteral cipher
+- Unit 100: Baconian cipher✅
+- Unit 101: Triliteral cipher✅
 - **Unit 102: Morse code**✅
 - Unit 103: Monome-dinome cipher
 - Unit 104: Straddling checkerboard cipher
