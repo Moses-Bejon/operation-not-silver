@@ -38,8 +38,8 @@ that the coordinates are binary, binary, ternary, and binary digits.
 ## Triliteral ✅
 ### 2010 SE 
 
-# Transposition 
-## AMSCO 
+# Transposition ✅
+## AMSCO ✅
 ### 2014 7B, 2015 7B
 
 # Disk ciphers
