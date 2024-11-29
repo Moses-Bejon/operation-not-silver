@@ -2,17 +2,17 @@ import os
 import sys
 import pandas as pd
 
-
-'''Thanks ChatGPT!'''
+'''Used to run statistics on the NCC data and store as CSV. Called by analyser.py '''
 # Define the path to the 2023 dataset folder
 dataset_path = "nccData" 
-
+'''Thanks ChatGPT for path operations!'''
 # Adjust to your local path
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
 from statsAnalyser.computeStatistics import getStatistics
 
 # Create a list to store the data
 data = []
+
 def remove_name_variations(cipher_type):
     cipher_type = cipher_type.lower()
     cipher_type = cipher_type.replace("cipher: ", "")
@@ -33,7 +33,9 @@ def remove_name_variations(cipher_type):
                 print(group_name)
                 return group_name
     return cipher_type
+
 def load_challenge(year_path, challenge_code):
+    '''loads a challenge directory, calls computeStatistics to return a dict.'''
     challenge_path = os.path.join(year_path, challenge_code)
     # Check for the files we need (ciphertext.txt and solution.txt)
     ciphertext_file = os.path.join(challenge_path, 'ciphertext.txt')
@@ -98,11 +100,11 @@ def generateYearsCSV(start, end):
     print(df.tail()["CipherType"])  # To check the first few rows
     return filename
 
-def generateAllCSV(): # using cleaned folders
+def generateAllCSV(redo=True): # using cleaned folders
     '''Generates a csv with all challenges including special editions and harry's game. 
     If file already exists, it simply returns the file name.'''
     filename = 'All' + '_ciphertext_data_stats.csv'
-    if filename in os.listdir('.'):
+    if filename in os.listdir('.') and not redo:
         return filename
 
     for year in os.listdir(dataset_path):

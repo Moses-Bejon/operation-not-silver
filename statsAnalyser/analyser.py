@@ -10,6 +10,8 @@ from computeStatistics import getStatistics
 from extractData_clean import generateYearsCSV, generateAllCSV
 
 
+'''Instructions in analyser.ipynb'''
+
 rf = RandomForestClassifier()
 svm = LinearSVC()
 
@@ -23,7 +25,6 @@ def get_X_y(csv_filename):
 
 
 def svc_train_predict(X, y):
-        
     train_x, test_x, train_y, test_y = model_selection.train_test_split(
     X, y, train_size=0.9)
     svm.fit(train_x, train_y)
@@ -46,8 +47,6 @@ def svc_train_predict(X, y):
     print (df)
 
 # svc_train_predict(X, y)
-
-
 
 
 def train_test(model_object, X, y, print_pred=False, drop_diff=False, drop_logmono=False):
@@ -74,13 +73,13 @@ def train_test(model_object, X, y, print_pred=False, drop_diff=False, drop_logmo
     print(f"Test accuracy: {model_object.score(test_x,test_y)}")
 
 
-def csv_predict(filename):
+def csv_predict(filename, model):
     X, y = get_X_y(filename)
     # label = rf.predict(cipher_stats)
-    for predicted, real in zip(rf.predict(X), y):
+    for predicted, real in zip(model.predict(X), y):
         print("Actual:"+real, "Predicted:"+predicted)
         print(predicted == real)
-    print(rf.score(X, y))
+    print(model.score(X, y))
 
 # csv_predict("2019_ciphertext_data_stats.csv")
 
@@ -108,4 +107,11 @@ def main():
     model = RandomForestClassifier()
     train_test(model, X, y)
     testfile = 'test_ciphertext.txt'
+    saveModel(model, 'withEntropy')
+    
+def predict_from_saved():
+    model = loadModel('withEntropy')
+    predict_text(model, 'test_ciphertext.txt')
 
+if __name__ == "__main__":
+    main()

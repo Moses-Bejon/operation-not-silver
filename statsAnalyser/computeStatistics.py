@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 
+'''Various functions to calculate statistics given a piece of ciphertext using evaluate.py'''
+
+
 def lengthStats(ciphertext): # might end up being a class!
     l = len(ciphertext)
 
@@ -146,7 +149,8 @@ def getStatistics(ciphertext):
         'IOC': IOC(ciphertext),
         'bigramIOC': IOC(ciphertext, blockSize=2),
         'trigramIOC': IOC(ciphertext, blockSize=3),
-        'quadgramFrequenciesScore': evaluateQuadgramFrequencies(ciphertext)
+        'quadgramFrequenciesScore': evaluateQuadgramFrequencies(ciphertext),
+        'entropy': getEntropy(ciphertext)
         }
     return statistics
 def main():
@@ -170,3 +174,4 @@ def main():
 if __name__ == "__main__":
     main()
     pass
+

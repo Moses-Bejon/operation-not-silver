@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 
+
 dataset_path = "BritishNationalCipherChallenge" 
 new_dataset_path = "nccData" 
 # os.mkdir("nccData")
