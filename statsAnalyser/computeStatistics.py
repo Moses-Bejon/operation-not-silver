@@ -146,12 +146,14 @@ def getStatistics(ciphertext):
     statistics = {
         # 'lengthStats': lengthStats(ciphertext),
         'monogramFitness':evaluateLetterFrequenciesUnsubstituted(ciphertext),
+        'monogramSortedFitness': getVectorEvaluationSubstituted((sorted(letterFrequencies, reverse=True))), # this should distinguish the letter frequencies between transposition and monosub?
         'IOC': IOC(ciphertext),
         'bigramIOC': IOC(ciphertext, blockSize=2),
         'trigramIOC': IOC(ciphertext, blockSize=3),
         'quadgramFrequenciesScore': evaluateQuadgramFrequencies(ciphertext),
         'entropy': getEntropy(ciphertext)
         }
+    print("Done")
     return statistics
 def main():
     # -----------setting up ciphertext----------
