@@ -228,6 +228,68 @@ def calculateBigramFrequencies():
     with open("bigram proportions unlogged.json","w") as file:
         json.dump(hashMap,file)
 
+def calculateWheatstoneShiftedFrequencies():
+    from formatCipher import stringToInt
+    from wheatstoneWheel import encrypt
+
+    with open("trainingData","r") as trainingData:
+        trainingData = unidecode(trainingData.read())
+
+    trainingDataInteger = []
+
+    previousCharacter = None
+    for character in trainingData:
+        if character.isalpha():
+
+            character = character.lower()
+
+            if character == previousCharacter:
+                if character == "x":
+                    trainingDataInteger.append(ord("q")-97)
+                else:
+                    trainingDataInteger.append(ord("x")-97)
+
+            trainingDataInteger.append(ord(character)-97)
+
+            previousCharacter = character
+
+        elif character.isspace():
+
+            if previousCharacter == " ":
+                continue
+
+            trainingDataInteger.append(26)
+            previousCharacter = " "
+
+    encryptedTrainingData = encrypt(
+        stringToInt("BCDEFGHIJKLMNOPQRSTUVWXYZA"),
+        trainingDataInteger
+    )
+
+    trigramToFrequency = {}
+
+    window = encryptedTrainingData[:4]
+    for i in encryptedTrainingData[4:]:
+        first = window[0]
+        trigram = ((window[1]-first)%26,(window[2]-first)%26,(window[3]-first)%26)
+
+        try:
+            trigramToFrequency[trigram] += 1
+        except KeyError:
+            trigramToFrequency[trigram] = 1
+
+        window.pop(0)
+        window.append(i)
+
+    hashmap = [-25] * (26 ** 3)
+
+    total = len(encryptedTrainingData)-3
+
+    for trigram,frequency in trigramToFrequency.items():
+        hashmap[trigram[0]*26**2 + trigram[1]*26 + trigram[2]] = log2(frequency/total)
+
+    with open("wheatstoneShiftTrigrams.json","w") as file:
+        json.dump(hashmap,file)
 
 # calculateAlphanumericQuadgramFrequencies()
 # calculateQuadgramFrequencies()
