@@ -1,8 +1,9 @@
+# to be used in hill climb with the amount to go without climbing before shaking as 500 and 3 shuffles per shake
+
 import json
 from math import inf
 
 from monoAlphabeticSubstitution import monoAlphabeticSubstitution
-from formatCipher import stringToInt,intToString
 from evaluate import evaluateQuadgramFrequencies
 
 def stringToIntWithSpace(cipher):
