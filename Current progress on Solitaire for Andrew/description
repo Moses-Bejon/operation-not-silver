@@ -1,5 +1,0 @@
-The hill climb file in this directory should run with the custom evaluate made for this directory.
-You shouldn't need any files outside this directory to run solitaire. Not evaluate, not any jsons, nothing.
-It should all be here.
-
-Experiment with the three cipher options of linked list, linked list array and array. Array is fastest in python.
